@@ -37,8 +37,8 @@ As a prerequisite for this guide, you need to have **RStudio** and a few essenti
 
 ```{r,echo=FALSE}
 library(kableExtra)
-Package<-c("tidyverse","meta","metafor")
-Description<-c("This is a large package containing various functions to tidy up your data", "This package is a so-called wrapper for many meta-analytic functions and makes it easy to code different meta-analyses","This package is used by the meta package for many applications, so we need to have it installed")
+Package<-c("tidyverse","meta","metaforest")
+Description<-c("This is a large package containing various functions to tidy up your data", "This package is a so-called wrapper for many meta-analytic functions and makes it easy to code different meta-analyses","This package is used to explore heterogeneity using the random forests algorithm. It also installs the R-package 'metafor', which is one of the most commonly used meta-analysis packages.")
 m<-data.frame(Package,Description)
 names<-c("Package", "Description")
 colnames(m)<-names
@@ -51,7 +51,7 @@ kable(m)
 ```{r, eval=FALSE}
 install.packages("tidyverse")
 install.packages("meta")
-install.packages("metafor")
+install.packages("metaforest")
 ```
 
 ```{block, type='rmdachtung'}
@@ -60,13 +60,17 @@ Don't forget to put the packages in `""`.
 Otherwise, you will get an error message.
 ```
 
-<br><br>
+<br>
 
-**You are now set and ready to proceed. Below, you can find some basic information on RStudio and troubleshooting**
+**Continue to the next chapter.**
+
+<br>
+
+*Additional, non-essential information on RStudio and troubleshooting below.*
 
 ### Running R Code
 
-Order to get the most out of this guide, it's helpful (but not essential) if you have some programming experience already. If you’ve never programmed before, you might find ***Hands-On Programming with R*** [@grolemund2014hands] to be a useful primer.
+In order to get the most out of this guide, it's helpful (but not essential) if you have some programming experience already. If you’ve never programmed before, you might find ***Hands-On Programming with R*** [@grolemund2014hands] to be a useful primer.
 
 There are three things you need to run the code: **R**, **RStudio**, and collection of **R packages**. Packages are the fundamental units of reproducible R code. They include reusable functions, the documentation that describes how to use them, and sample data.
 
@@ -90,7 +94,7 @@ be help somewhere on the web. (If the error message isn’t in English,
 run `Sys.setenv(LANGUAGE = "en")` and re-run the code; you’re
 more likely to find help for English error messages.)
 * If Google doesn’t help, try [stackoverflow](https://stackoverflow.com). Start by spending a little time searching for an existing answer; including [R] restricts your search to questions and answers that use R. 
-* Lastly, if you stumble upon an error (or typos!) in this guide's text or R syntax, feel free to contact **Mathias Harrer** at **mathias.harrer@fau.de**.
+* Lastly, if you stumble upon an error (or typos!) in this guide's text or R syntax, feel free to contact **Caspar van Lissa** at **c.j.vanlissa@uu.nl**.
 
 <br><br>
 

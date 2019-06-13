@@ -1,9 +1,9 @@
 --- 
-title: "Doing Meta-Analysis in R"
+title: "Doing Meta-Analysis in R and exploring heterogeneity"
 subtitle: "A Hands-on Guide"
-author: "Mathias Harrer, B.Sc.¹, Prof. Dr. Pim Cuijpers² & Assoc. Prof. Dr. David Ebert²"
-date: "¹Friedrich-Alexander-University Erlangen-Nuremberg, ²Vrije Universiteit Amsterdam"
-github-repo: "MathiasHarrer/Doing-Meta-Analysis-in-R"
+author: "Caspar van Lissa¹"
+date: "¹Utrecht University"
+github-repo: "cjvanlissa/Doing-Meta-Analysis-in-R"
 site: bookdown::bookdown_site
 output: 
   bookdown::gitbook:
