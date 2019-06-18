@@ -20,7 +20,7 @@ documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-description: "This is a fork of the book 'Doing Meta-Analysis in R', by Mathias Harrer, Pim Cuijpers, & David Ebert, adapted to focus on exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/"
+description: "This guide is based on the book 'Doing Meta-Analysis in R', by Mathias Harrer, Pim Cuijpers, & David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/"
 favicon: "favicon.ico"
 ---
 
@@ -29,7 +29,7 @@ favicon: "favicon.ico"
 ![](coverbild.jpg)
 
 ```{block,type='rmdinfo'}
-This is a fork of the book 'Doing Meta-Analysis in R', by Mathias Harrer, Pim Cuijpers, & David Ebert, adapted to focus on exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/
+This guide is based on the book 'Doing Meta-Analysis in R', by Mathias Harrer, Pim Cuijpers, & David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/
 ```
 
 <br></br>
@@ -46,11 +46,6 @@ This is a fork of the book 'Doing Meta-Analysis in R', by Mathias Harrer, Pim Cu
 * Tackle heterogeneity using **subgroup analyses** and **meta-regression**
 * Check if **selective outcome reporting (publication bias)** is a present in your data
 * Control for selective outcome reporting and publication bias
-* Analyse the **risk of bias** in your data
-* Do advanced types of meta-analyses, such as 
-    + **network analyses** or 
-    + meta-analyses with **more than one outcome**
-  
 
 ---
 

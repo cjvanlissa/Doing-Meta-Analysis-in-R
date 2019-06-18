@@ -30,7 +30,7 @@ One advantage of using an **R project** is that the project directory is automat
 
 ## Importing Excel Files
 
-One way to get Excel files directly into R is by using the XLConnect package. For this example, you will need the *"happy.xlsx"* file. Check if the file is in your project directory. If not, you can download it from https://github.com/cjvanlissa/Doing-Meta-Analysis-in-R.
+One way to get Excel files directly into R is by using the XLConnect package. For this example, you will need the *"happy.xlsx"* file. Check if the file is in your project directory. If not, you can download it from https://github.com/cjvanlissa/Doing-Meta-Analysis-in-R/happy.xlsx.
 
 Install the package, and try using the readWorksheetFromFile() function to load the data, and assign it to an object called `df`:
 
@@ -92,7 +92,9 @@ kable(head(madata.s))
 
 ## Importing SPSS Files (optional)
 
-SPSS files can be loaded using the `foreign` package:
+SPSS files can be loaded using the `foreign` package. For this example, you can download an SPSS file at
+https://github.com/cjvanlissa/Doing-Meta-Analysis-in-R/problem2.sav.
+
 
 ```{r, eval = FALSE}
 # Install the package, run this only once
@@ -102,7 +104,7 @@ install.packages("foreign")
 library(foreign)
 
 # Read the SPSS data
-df_spss <- read.spss("problem3.sav",
+df_spss <- read.spss("problem2.sav",
                      to.data.frame = TRUE,
                      use.value.labels = FALSE)
 ```

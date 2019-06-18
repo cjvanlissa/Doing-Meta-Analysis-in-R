@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>11.2 Fitting a three-level model | Doing Meta-Analysis in R and exploring heterogeneity using metaforest</title>
+  <meta name="description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="11.2 Fitting a three-level model | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="11.2 Fitting a three-level model | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  
+  <meta name="twitter:description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
+  
+
+<meta name="author" content="Caspar van Lissa¹">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="prev" href="meta-analysis-is-multi-level-optional.html">
+<link rel="next" href="metaforest.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+<link rel="stylesheet" href="font-awesome.min.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Doing Meta-Analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About this Guide</a></li>
+<li class="chapter" data-level="2" data-path="preparing-for-the-course.html"><a href="preparing-for-the-course.html"><i class="fa fa-check"></i><b>2</b> Preparing for the course</a><ul>
+<li class="chapter" data-level="2.1" data-path="RStudio.html"><a href="RStudio.html"><i class="fa fa-check"></i><b>2.1</b> Getting RStudio to run on your computer</a></li>
+<li class="chapter" data-level="2.2" data-path="starting-a-new-project-in-rstudio.html"><a href="starting-a-new-project-in-rstudio.html"><i class="fa fa-check"></i><b>2.2</b> Starting a new project in Rstudio</a></li>
+<li class="chapter" data-level="2.3" data-path="additional-resources-optional.html"><a href="additional-resources-optional.html"><i class="fa fa-check"></i><b>2.3</b> Additional resources (optional)</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="additional-resources-optional.html"><a href="additional-resources-optional.html#getting-help"><i class="fa fa-check"></i><b>2.3.1</b> Getting Help</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="getting-your-data-into-r.html"><a href="getting-your-data-into-r.html"><i class="fa fa-check"></i><b>3</b> Getting your data into R</a><ul>
+<li class="chapter" data-level="3.1" data-path="what-should-be-in-the-file.html"><a href="what-should-be-in-the-file.html"><i class="fa fa-check"></i><b>3.1</b> What should be in the file</a></li>
+<li class="chapter" data-level="3.2" data-path="importing-excel-files.html"><a href="importing-excel-files.html"><i class="fa fa-check"></i><b>3.2</b> Importing Excel Files</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="importing-excel-files.html"><a href="importing-excel-files.html#inspect-the-data"><i class="fa fa-check"></i><b>3.2.1</b> Inspect the data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="importing-spss-files-optional.html"><a href="importing-spss-files-optional.html"><i class="fa fa-check"></i><b>3.3</b> Importing SPSS Files (optional)</a></li>
+<li class="chapter" data-level="3.4" data-path="data-manipulation-optional.html"><a href="data-manipulation-optional.html"><i class="fa fa-check"></i><b>3.4</b> Data manipulation (optional)</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="data-manipulation-optional.html"><a href="data-manipulation-optional.html#convertfactors"><i class="fa fa-check"></i><b>3.4.1</b> Converting to factors</a></li>
+<li class="chapter" data-level="3.4.2" data-path="data-manipulation-optional.html"><a href="data-manipulation-optional.html#select"><i class="fa fa-check"></i><b>3.4.2</b> Selecting specific studies</a></li>
+<li class="chapter" data-level="3.4.3" data-path="data-manipulation-optional.html"><a href="data-manipulation-optional.html#changing-cell-values"><i class="fa fa-check"></i><b>3.4.3</b> Changing cell values</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="calc.html"><a href="calc.html"><i class="fa fa-check"></i><b>4</b> Calculating Effect Sizes</a><ul>
+<li class="chapter" data-level="4.1" data-path="fixed.html"><a href="fixed.html"><i class="fa fa-check"></i><b>4.1</b> Calculating standardized mean differences</a></li>
+<li class="chapter" data-level="4.2" data-path="formula.html"><a href="formula.html"><i class="fa fa-check"></i><b>4.2</b> From formulas</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="pool.html"><a href="pool.html"><i class="fa fa-check"></i><b>5</b> Pooling Effect Sizes</a><ul>
+<li class="chapter" data-level="5.1" data-path="fixedef.html"><a href="fixedef.html"><i class="fa fa-check"></i><b>5.1</b> Fixed-Effects-Model</a></li>
+<li class="chapter" data-level="5.2" data-path="random.html"><a href="random.html"><i class="fa fa-check"></i><b>5.2</b> Random-Effects-Model</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="random.html"><a href="random.html#tau2"><i class="fa fa-check"></i><b>5.2.1</b> Estimators for <em>tau<sup>2</sup></em> in the random-effects-model</a></li>
+<li class="chapter" data-level="5.2.2" data-path="random.html"><a href="random.html#random.precalc"><i class="fa fa-check"></i><b>5.2.2</b> Conducting the analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="forest-plots.html"><a href="forest-plots.html"><i class="fa fa-check"></i><b>6</b> Forest Plots</a><ul>
+<li class="chapter" data-level="6.1" data-path="generating-a-forest-plot.html"><a href="generating-a-forest-plot.html"><i class="fa fa-check"></i><b>6.1</b> Generating a Forest Plot</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="generating-a-forest-plot.html"><a href="generating-a-forest-plot.html#prediction-interval"><i class="fa fa-check"></i><b>6.1.1</b> Prediction interval</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="saving-the-forest-plot.html"><a href="saving-the-forest-plot.html"><i class="fa fa-check"></i><b>6.2</b> Saving the forest plot</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="heterogeneity.html"><a href="heterogeneity.html"><i class="fa fa-check"></i><b>7</b> Between-study Heterogeneity</a><ul>
+<li class="chapter" data-level="7.1" data-path="heterogeneity-statistics.html"><a href="heterogeneity-statistics.html"><i class="fa fa-check"></i><b>7.1</b> Heterogeneity statistics</a></li>
+<li class="chapter" data-level="7.2" data-path="assessing-the-heterogeneity-of-your-pooled-effect-size.html"><a href="assessing-the-heterogeneity-of-your-pooled-effect-size.html"><i class="fa fa-check"></i><b>7.2</b> Assessing the heterogeneity of your pooled effect size</a></li>
+<li class="chapter" data-level="7.3" data-path="detecting-outliers-influential-cases.html"><a href="detecting-outliers-influential-cases.html"><i class="fa fa-check"></i><b>7.3</b> Detecting outliers &amp; influential cases</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="detecting-outliers-influential-cases.html"><a href="detecting-outliers-influential-cases.html#outliers"><i class="fa fa-check"></i><b>7.3.1</b> Searching for extreme effect sizes (outliers)</a></li>
+<li class="chapter" data-level="7.3.2" data-path="detecting-outliers-influential-cases.html"><a href="detecting-outliers-influential-cases.html#sensitivity-analysis"><i class="fa fa-check"></i><b>7.3.2</b> Sensitivity analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="subgroup.html"><a href="subgroup.html"><i class="fa fa-check"></i><b>8</b> Subgroup Analyses</a><ul>
+<li class="chapter" data-level="8.1" data-path="mixed.html"><a href="mixed.html"><i class="fa fa-check"></i><b>8.1</b> Mixed-Effects-Model</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="mixed.html"><a href="mixed.html#regression-specification"><i class="fa fa-check"></i><b>8.1.1</b> Regression specification</a></li>
+<li class="chapter" data-level="8.1.2" data-path="mixed.html"><a href="mixed.html#t-test-on-the-coefficients"><i class="fa fa-check"></i><b>8.1.2</b> T-test on the coefficients</a></li>
+<li class="chapter" data-level="8.1.3" data-path="mixed.html"><a href="mixed.html#free-variance-per-group"><i class="fa fa-check"></i><b>8.1.3</b> Free variance per group</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="metareg.html"><a href="metareg.html"><i class="fa fa-check"></i><b>9</b> Meta-Regression</a><ul>
+<li class="chapter" data-level="9.1" data-path="meta-regression-in-r.html"><a href="meta-regression-in-r.html"><i class="fa fa-check"></i><b>9.1</b> Meta-regression in R</a></li>
+<li class="chapter" data-level="9.2" data-path="plotting-regressions.html"><a href="plotting-regressions.html"><i class="fa fa-check"></i><b>9.2</b> Plotting regressions</a></li>
+<li class="chapter" data-level="9.3" data-path="multiple-meta-regression.html"><a href="multiple-meta-regression.html"><i class="fa fa-check"></i><b>9.3</b> Multiple Meta-Regression</a></li>
+<li class="chapter" data-level="9.4" data-path="interactions.html"><a href="interactions.html"><i class="fa fa-check"></i><b>9.4</b> Interactions</a></li>
+<li class="chapter" data-level="9.5" data-path="pitfalls.html"><a href="pitfalls.html"><i class="fa fa-check"></i><b>9.5</b> Common pitfalls</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="publication-bias.html"><a href="publication-bias.html"><i class="fa fa-check"></i><b>10</b> Publication Bias</a><ul>
+<li class="chapter" data-level="10.1" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html"><i class="fa fa-check"></i><b>10.1</b> Detecting publication bias</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#funnel-plots"><i class="fa fa-check"></i><b>10.1.1</b> Funnel plots</a></li>
+<li class="chapter" data-level="10.1.2" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#contour-enhanced-funnel-plots"><i class="fa fa-check"></i><b>10.1.2</b> Contour-enhanced funnel plots</a></li>
+<li class="chapter" data-level="10.1.3" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#testing-for-funnel-plot-asymmetry-using-eggers-test"><i class="fa fa-check"></i><b>10.1.3</b> Testing for funnel plot asymmetry using Egger’s test</a></li>
+<li class="chapter" data-level="10.1.4" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#dant"><i class="fa fa-check"></i><b>10.1.4</b> Duval &amp; Tweedie’s trim-and-fill procedure</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="multilevel-meta-analysis.html"><a href="multilevel-meta-analysis.html"><i class="fa fa-check"></i><b>11</b> “Multilevel” Meta-Analysis</a><ul>
+<li class="chapter" data-level="11.1" data-path="meta-analysis-is-multi-level-optional.html"><a href="meta-analysis-is-multi-level-optional.html"><i class="fa fa-check"></i><b>11.1</b> Meta-Analysis is multi-level (optional)</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="meta-analysis-is-multi-level-optional.html"><a href="meta-analysis-is-multi-level-optional.html#three-level-meta-analytic-models"><i class="fa fa-check"></i><b>11.1.1</b> Three-level meta-analytic models</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html"><i class="fa fa-check"></i><b>11.2</b> Fitting a three-level model</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html#data-preparation"><i class="fa fa-check"></i><b>11.2.1</b> Data preparation</a></li>
+<li class="chapter" data-level="11.2.2" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html#model-fitting"><i class="fa fa-check"></i><b>11.2.2</b> Model fitting</a></li>
+<li class="chapter" data-level="11.2.3" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html#distribution-of-total-variance"><i class="fa fa-check"></i><b>11.2.3</b> Distribution of total variance</a></li>
+<li class="chapter" data-level="11.2.4" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html#comparing-the-fit"><i class="fa fa-check"></i><b>11.2.4</b> Comparing the fit</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="metaforest.html"><a href="metaforest.html"><i class="fa fa-check"></i><b>12</b> Exploring heterogeneity</a><ul>
+<li class="chapter" data-level="12.1" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html"><i class="fa fa-check"></i><b>12.1</b> Understanding random forests</a><ul>
+<li class="chapter" data-level="12.1.1" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html#meta-analytic-random-forests"><i class="fa fa-check"></i><b>12.1.1</b> Meta-analytic random forests</a></li>
+<li class="chapter" data-level="12.1.2" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html#tuning-parameters"><i class="fa fa-check"></i><b>12.1.2</b> Tuning parameters</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="using-metaforest.html"><a href="using-metaforest.html"><i class="fa fa-check"></i><b>12.2</b> Using MetaForest</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="using-metaforest.html"><a href="using-metaforest.html#checking-convergence"><i class="fa fa-check"></i><b>12.2.1</b> Checking convergence</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="model-tuning.html"><a href="model-tuning.html"><i class="fa fa-check"></i><b>12.3</b> Model tuning</a><ul>
+<li class="chapter" data-level="12.3.1" data-path="model-tuning.html"><a href="model-tuning.html#variable-importance"><i class="fa fa-check"></i><b>12.3.1</b> Variable importance</a></li>
+<li class="chapter" data-level="12.3.2" data-path="model-tuning.html"><a href="model-tuning.html#partial-dependence"><i class="fa fa-check"></i><b>12.3.2</b> Partial dependence</a></li>
+</ul></li>
+<li class="chapter" data-level="12.4" data-path="what-to-report.html"><a href="what-to-report.html"><i class="fa fa-check"></i><b>12.4</b> What to report</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Doing Meta-Analysis in R and exploring heterogeneity using metaforest</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="fitting-a-three-level-model" class="section level2">
+<h2><span class="header-section-number">11.2</span> Fitting a three-level model</h2>
+<p>The <code>metafor</code> package is particularly well suited for fitting various three-level models in meta-analyses.</p>
+<div id="data-preparation" class="section level3">
+<h3><span class="header-section-number">11.2.1</span> Data preparation</h3>
+<p>For this chapter, we continue to use the <code>curry</code> dataset from <code>metaforest</code>, which we have assigned to the object <code>df</code>. It has already been prepared for multilevel model fitting: Let’s have a peek at the dataset.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the package, if you haven&#39;t yet</span>
+<span class="kw">library</span>(metaforest)
+<span class="co"># Assign the curry dataset to df, if you haven&#39;t yet</span>
+df &lt;-<span class="st"> </span>curry
+<span class="co"># Examine the first 6 rows of the data</span>
+<span class="kw">head</span>(df)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["study_id"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["effect_id"],"name":[2],"type":["int"],"align":["right"]},{"label":["d"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["vi"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["n1i"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["n2c"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["sex"],"name":[7],"type":["int"],"align":["right"]},{"label":["age"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["location"],"name":[9],"type":["fctr"],"align":["left"]},{"label":["donor"],"name":[10],"type":["fctr"],"align":["left"]},{"label":["donorcode"],"name":[11],"type":["fctr"],"align":["left"]},{"label":["interventioniv"],"name":[12],"type":["fctr"],"align":["left"]},{"label":["interventioncode"],"name":[13],"type":["fctr"],"align":["left"]},{"label":["control"],"name":[14],"type":["fctr"],"align":["left"]},{"label":["controlcode"],"name":[15],"type":["fctr"],"align":["left"]},{"label":["recipients"],"name":[16],"type":["fctr"],"align":["left"]},{"label":["outcomedv"],"name":[17],"type":["fctr"],"align":["left"]},{"label":["outcomecode"],"name":[18],"type":["fctr"],"align":["left"]}],"data":[{"1":"Aknin, Barrington-Leigh, et al. (2013) Study 3","2":"1","3":"0.46","4":"0.02052900","5":"100","6":"100","7":"38","8":"21.0","9":"Canada / South Africa","10":"Typical","11":"Typical","12":"Prosocial Purchase","13":"Prosocial Spending","14":"Personal Purchase","15":"Self Help","16":"Anonymous Sick Children","17":"PA","18":"PN Affect","_rn_":"1"},{"1":"Aknin, Barrington-Leigh, et al. (2013) Study 3","2":"2","3":"0.13","4":"0.02004225","5":"100","6":"100","7":"38","8":"21.0","9":"Canada / South Africa","10":"Typical","11":"Typical","12":"Prosocial Purchase","13":"Prosocial Spending","14":"Personal Purchase","15":"Self Help","16":"Anonymous Sick Children","17":"SWLS","18":"Life Satisfaction","_rn_":"2"},{"1":"Aknin, Broesch, et al. (2015) Study 1","2":"3","3":"0.93","4":"0.17047885","5":"13","6":"13","7":"42","8":"45.0","9":"Vanuatu","10":"Typical","11":"Typical","12":"Prosocial Purchase","13":"Prosocial Spending","14":"Personal Purchase","15":"Self Help","16":"Family / Friends","17":"PA","18":"PN Affect","_rn_":"3"},{"1":"Aknin, Broesch, et al. (2015) Study 2","2":"4","3":"0.30","4":"0.10112500","5":"20","6":"20","7":"70","8":"3.0","9":"Vanuatu","10":"Typical","11":"Typical","12":"Donate own sweets","13":"Other","14":"Donate other sweets","15":"Neutral Activity","16":"Puppet","17":"Smiling","18":"Other","_rn_":"4"},{"1":"Aknin, Dunn, et al. (2013) Study 3","2":"5","3":"0.24","4":"0.08057600","5":"25","6":"25","7":"34","8":"21.0","9":"Canada","10":"Typical","11":"Typical","12":"Prosocial Purchase","13":"Prosocial Spending","14":"Personal Purchase","15":"Self Help","16":"Someone","17":"WB","18":"Other","_rn_":"5"},{"1":"Aknin, Fleerackers, et al. (2014)","2":"6","3":"0.38","4":"0.03422254","5":"60","6":"59","7":"41","8":"19.9","9":"USA","10":"Typical","11":"Typical","12":"Prosocial Purchase","13":"Prosocial Spending","14":"Personal Purchase","15":"Self Help","16":"Anonymous Sick Children","17":"PANAS","18":"PN Affect","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>We see that the first two columns of the dataset are ID variables:</p>
+<ul>
+<li><strong>study_id</strong> and <strong>effect_id</strong>. In these two columns, we stored the identifiers corresponding to the individual effect sizes, and we will use the studies as clusters on different levels of our multilevel model.</li>
+</ul>
+<!--There are two additional columns which contain data needed for **subgroup analyses**. To conduct subgroup analyses with `metafor`, however, we need to store the data a little differently than in [Chapter 7](#subgroup). This time, we do not use a factor vector containing the subgroup levels as strings, but **recode all subgroup levels** as individuals columns in the data. In our case, we are interested if the publication status has a moderating effect on the pooled results. We want to compare studies published in peer-review journals to dissertations. To do this, we need to create **two variables/columns for each subgroup level** (peer-review, dissertation). In each column we provide a code if the effect size belongs to this subgroup, defined by `1 = yes` and `0 = no`. Of course, the subgroup codings now have to be **mutually exclusive**, as we cannot calculate subgroup effects if a study is both part of the "peer-review" group and the "dissertation" group.  -->
+<div class="rmdinfo">
+<p>
+Multilevel models can accommodate different sources of heterogeneity, too. Maybe you have effect sizes originating in different countries, or maybe you want to cluster by (team of) authors. Just replace the study_id with <strong>your</strong> cluster id, in those cases. It is even possible to have more levels added (e.g., effect sizes within studies within countries), although that is beyond the scope of this tutorial.
+</p>
+</div>
+</div>
+<div id="model-fitting" class="section level3">
+<h3><span class="header-section-number">11.2.2</span> Model fitting</h3>
+<p>We are now prepared to fit our model. I will save the model to the object <code>m_multi</code>. For model fitting, we use the <code>rma.mv</code> function in <code>metafor</code>. This is a <em>more technical</em> interface than the standard <code>rma</code> function. The function has plenty of parameters one can specify (type <code>?metafor::rma.mv</code> in the console to see them all). For now, we will only focus on the really essential ones.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Code
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+yi
+</td>
+<td style="text-align:left;">
+The variable in our dataset containing the effect size data
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+V
+</td>
+<td style="text-align:left;">
+The variable in our dataset containing the sampling variance data corresponding to each y
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+random
+</td>
+<td style="text-align:left;">
+The model specifications for our multilevel model. We describe this in more detail below
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+data
+</td>
+<td style="text-align:left;">
+The data.frame containing our data
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+method
+</td>
+<td style="text-align:left;">
+The tau-squared estimator. Our options here are limited, and it is advised to use the restricted maximum likelihood (‘REML’) method, which is the default
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Setting up the formula</strong></p>
+<p>Under the <code>random</code> parameter, we feed <code>rma.mv</code> with the formula for the random effects in our model. As we actually have two formulas in three-level models, we have to bundle them together in a <code>list()</code>. The notation for <code>rma.mv</code> is very similar to other packages specialized for mixed-effects models such as <code>lme4</code> <span class="citation">(Bates et al. <a href="#ref-lme4">2015</a>)</span>.</p>
+<p>Within the <code>list()</code>, formulae are separated with commas. Within the formula, we first define the random effects variance as <code>~ 1</code>, followed by a <strong>vertical bar</strong> <code>|</code>. Behind the vertical bar, we assign this random effect to a <strong>grouping variable</strong> such as studies, measures, regions and so forth. We only have to define the formulae for <strong>level 2</strong> and <strong>level 3</strong>. The sampling variance in level 1 is assumed to be known; this is a necessary assumption in three-level meta-analysis, because we don’t have the raw data. Without this assumption, the model would not be identified. We type in the formulae in the order of our multilevel model. As in our example, ID_2 is nested in ID_1, we first define level 2 as <code>~ 1 | ID_2</code> and then level 3 as <code>~ 1 | ID_1</code>. Now, let’s put it all together:</p>
+<pre class="sourceCode r"><code class="sourceCode r">m_multi &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(d, vi, <span class="dt">random =</span> <span class="kw">list</span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>effect_id, <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>study_id), <span class="dt">data =</span> df) 
+m_multi</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 56; method: REML)
+## 
+## Variance Components: 
+## 
+##             estim    sqrt  nlvls  fixed     factor
+## sigma^2.1  0.0000  0.0000     56     no  effect_id
+## sigma^2.2  0.0838  0.2895     27     no   study_id
+## 
+## Test for Heterogeneity: 
+## Q(df = 55) = 156.9109, p-val &lt; .0001
+## 
+## Model Results:
+## 
+## estimate      se    zval    pval   ci.lb   ci.ub     
+##   0.2836  0.0650  4.3638  &lt;.0001  0.1562  0.4109  ***
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Let’s go through the output one by one. First, let’s have a look at the <code>Variance Components</code>. Here, we see the variance calculated for each level of our model, <span class="math inline">\(\sigma^2_1\)</span> (level 2) and <span class="math inline">\(\sigma^2_2\)</span> (level 3). Under <code>nlvls</code>, we see the number of levels (i.e., subgroups) on each level. The number 56 corresponds to the number of unique effect sizes, and 27 is the number of unique studies. The heading <code>factor</code> is the best clue as to what levels these are: effect_id is the within-studies variance componend, and study_id is the between-studies variance component.</p>
+<p>Under <code>Model Results</code>, we see the <code>estimate</code> of our pooled effect, which is 0.2836. As our <code>y</code> column contained effect sizes expressed as Hedges’ g, the effect is therefore <span class="math inline">\(g = 0.2836.\)</span>, with a confidence interval of <span class="math inline">\(0.16-0.41\)</span>.</p>
+<p>Under <code>Test for Heterogeneity</code>, we see that the variance of effect sizes within our data overall was significant (<span class="math inline">\(p &lt; 0.001\)</span>). This however, is not very informative as we are interested how variance can be attributed to the different levels in our model.</p>
+</div>
+<div id="distribution-of-total-variance" class="section level3">
+<h3><span class="header-section-number">11.2.3</span> Distribution of total variance</h3>
+<p>As mentioned before, what we’re actually interested in is the <strong>distribution of variance over the three levels of our model</strong>. Cheung (2014) provides a formula to estimate the sampling variance, which is needed to calculate the variance proportions for each level. We have have programmed a function called <code>variance_decomposition</code>, which implements this formula. The code for the function can be seen below. Parts of this code were adapted from Assink and Wibbelink <span class="citation">(Assink and Wibbelink <a href="#ref-assink2016fitting">2016</a>)</span>.</p>
+<p>R doesn’t know this function yet, so we have to let R learn it copying and pasting the code underneath <strong>in its entirety</strong> into the <strong>console</strong> on the bottom left pane of RStudio, and then hit <strong>Enter ⏎</strong>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">variance_decomposition &lt;-<span class="st"> </span><span class="cf">function</span>(m){
+    n &lt;-<span class="st"> </span>m<span class="op">$</span>k
+    vector.inv.var &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span>(<span class="kw">diag</span>(m<span class="op">$</span>V))
+    sum.inv.var &lt;-<span class="st"> </span><span class="kw">sum</span>(vector.inv.var)
+    sum.sq.inv.var &lt;-<span class="st"> </span>(sum.inv.var)<span class="op">^</span><span class="dv">2</span>
+    vector.inv.var.sq &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span>(<span class="kw">diag</span>(m<span class="op">$</span>V)<span class="op">^</span><span class="dv">2</span>)
+    sum.inv.var.sq &lt;-<span class="st"> </span><span class="kw">sum</span>(vector.inv.var.sq)
+    num &lt;-<span class="st"> </span>(n<span class="dv">-1</span>)<span class="op">*</span>sum.inv.var
+    den &lt;-<span class="st"> </span>sum.sq.inv.var <span class="op">-</span><span class="st"> </span>sum.inv.var.sq
+    est.samp.var &lt;-<span class="st"> </span>num<span class="op">/</span>den
+    <span class="cf">if</span>(<span class="kw">length</span>(m<span class="op">$</span>sigma2) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>) <span class="kw">stop</span>(<span class="st">&quot;Cannot handle more than three levels.&quot;</span>)
+    total_var &lt;-<span class="st"> </span>(<span class="kw">sum</span>(m<span class="op">$</span>sigma2)<span class="op">+</span>est.samp.var)<span class="op">/</span><span class="dv">100</span>
+    Variance &lt;-<span class="st"> </span><span class="kw">c</span>(est.samp.var, m<span class="op">$</span>sigma2)<span class="op">/</span>total_var
+    <span class="kw">names</span>(Variance) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Level1&quot;</span>, m<span class="op">$</span>s.names)
+    Variance
+}</code></pre>
+<p>Let’s have a look:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">variance_decomposition</span>(m_multi)</code></pre>
+<pre><code>##       Level1    effect_id     study_id 
+## 2.445403e+01 1.443707e-08 7.554597e+01</code></pre>
+<p>From the outputs, we see that about 24.45% of the overall variance can be attributed to level 1, 0% to level 2 (within-study variance), and as much as 75.55% to level 3 (between-study variance).</p>
+</div>
+<div id="comparing-the-fit" class="section level3">
+<h3><span class="header-section-number">11.2.4</span> Comparing the fit</h3>
+<p>Of course, when fitting a three-level model, we are interested if this model actually <strong>captures the variability in our data better than a two-level model</strong>. <code>metafor</code> allows us to easily do this by comparing models <strong>in which one of the levels is removed</strong>.</p>
+<p>To do this, we can use the <code>rma.mv</code> function again, but this time, we hold the variance component <span class="math inline">\(\sigma^2\)</span> of one level constant at 0. This can be done by specifying the <code>sigma2</code> parameter. The parameter can be specified by providing a vector telling the function which level to hold constant, with the generic version being <code>c(level 2, level3)</code>. So, if we want to hold level 2 constant while leaving the rest as is, we use <code>sigma2 = c(0,NA)</code>, and vice versa for the third level. We can then use ANOVAs to compare the fit of these models.</p>
+<pre class="sourceCode r"><code class="sourceCode r">m_within_null &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(<span class="dt">yi =</span> d, <span class="dt">V =</span> vi, <span class="dt">random =</span> <span class="kw">list</span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>effect_id, <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>study_id), <span class="dt">sigma2 =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="ot">NA</span>), <span class="dt">data =</span> df) 
+m_between_null &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(<span class="dt">yi =</span> d, <span class="dt">V =</span> vi, <span class="dt">random =</span> <span class="kw">list</span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>effect_id, <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>study_id), <span class="dt">sigma2 =</span> <span class="kw">c</span>(<span class="ot">NA</span>, <span class="dv">0</span>), <span class="dt">data =</span> df)
+m_both_null &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(<span class="dt">yi =</span> d, <span class="dt">V =</span> vi, <span class="dt">random =</span> <span class="kw">list</span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>effect_id, <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>study_id), <span class="dt">sigma2 =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">data =</span> df) 
+
+aov_within &lt;-<span class="st"> </span><span class="kw">anova</span>(m_multi, m_within_null) 
+aov_between &lt;-<span class="st"> </span><span class="kw">anova</span>(m_multi, m_between_null) 
+aov_bothnull &lt;-<span class="st"> </span><span class="kw">anova</span>(m_multi, m_both_null) 
+
+<span class="co"># Join these results in a table</span>
+aov_table &lt;-<span class="st"> </span><span class="kw">rbind</span>(
+<span class="kw">c</span>(<span class="dt">df=</span>aov_between<span class="op">$</span>p.f, aov_between<span class="op">$</span>fit.stats.f[<span class="kw">c</span>(<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>, <span class="dv">1</span>)], <span class="dt">LRT =</span> <span class="ot">NA</span>, <span class="dt">p =</span> <span class="ot">NA</span>),
+<span class="kw">c</span>(<span class="dt">df=</span>aov_within<span class="op">$</span>p.r, aov_within<span class="op">$</span>fit.stats.r[<span class="kw">c</span>(<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>, <span class="dv">1</span>)], <span class="dt">LRT =</span> aov_within<span class="op">$</span>LRT, <span class="dt">p =</span> aov_within<span class="op">$</span>pval),
+<span class="kw">c</span>(<span class="dt">df=</span>aov_between<span class="op">$</span>p.r, aov_between<span class="op">$</span>fit.stats.r[<span class="kw">c</span>(<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>, <span class="dv">1</span>)], <span class="dt">LRT =</span> aov_between<span class="op">$</span>LRT, <span class="dt">p =</span> aov_between<span class="op">$</span>pval),
+<span class="kw">c</span>(<span class="dt">df=</span>aov_bothnull<span class="op">$</span>p.r, aov_bothnull<span class="op">$</span>fit.stats.r[<span class="kw">c</span>(<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>, <span class="dv">1</span>)], <span class="dt">LRT =</span> aov_bothnull<span class="op">$</span>LRT, <span class="dt">p =</span> aov_bothnull<span class="op">$</span>pval)
+)
+<span class="kw">rownames</span>(aov_table) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Three-level model&quot;</span>, <span class="st">&quot;Within-studies variance constrained&quot;</span>, <span class="st">&quot;Between-studies variance constrained&quot;</span>, <span class="st">&quot;Both variance components constrained&quot;</span>)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+df
+</th>
+<th style="text-align:left;">
+AIC
+</th>
+<th style="text-align:left;">
+BIC
+</th>
+<th style="text-align:left;">
+ll
+</th>
+<th style="text-align:left;">
+LRT
+</th>
+<th style="text-align:left;">
+p
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Three-level model
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+22.14
+</td>
+<td style="text-align:left;">
+28.16
+</td>
+<td style="text-align:left;">
+-8.07
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Within-studies variance constrained
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+20.14
+</td>
+<td style="text-align:left;">
+24.15
+</td>
+<td style="text-align:left;">
+-8.07
+</td>
+<td style="text-align:left;">
+0.00
+</td>
+<td style="text-align:left;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Between-studies variance constrained
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+32.74
+</td>
+<td style="text-align:left;">
+36.76
+</td>
+<td style="text-align:left;">
+-14.37
+</td>
+<td style="text-align:left;">
+12.61
+</td>
+<td style="text-align:left;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Both variance components constrained
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+78.24
+</td>
+<td style="text-align:left;">
+80.25
+</td>
+<td style="text-align:left;">
+-38.12
+</td>
+<td style="text-align:left;">
+60.10
+</td>
+<td style="text-align:left;">
+0.000
+</td>
+</tr>
+</tbody>
+</table>
+<p>This table allows us to easily compare the models, using fit indices (AIC and BIC; lower is better), and likelihood ratio tests and p-values. The results unanimously indicate that the model with within-studies variance constrained to 0 fits the best, and that this constraint does not lead to significantly worse fit (p = 1.00). Still, the decision which model to use should be based at least as much on theory, as on statistical criteria.</p>
+<p><br><br></p>
+<hr />
+
+</div>
+</div>
+<!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-lme4">
+<p>Bates, Douglas, Martin Mächler, Ben Bolker, and Steve Walker. 2015. “Fitting Linear Mixed-Effects Models Using lme4.” <em>Journal of Statistical Software</em> 67 (1): 1–48. <a href="https://doi.org/10.18637/jss.v067.i01" class="uri">https://doi.org/10.18637/jss.v067.i01</a>.</p>
+</div>
+<div id="ref-assink2016fitting">
+<p>Assink, Mark, and Carlijn JM Wibbelink. 2016. “Fitting Three-Level Meta-Analytic Models in R: A Step-by-Step Tutorial.” <em>The Quantitative Methods for Psychology</em> 12 (3): 154–74.</p>
+</div>
+</div>
+<!DOCTYPE html>
+  <html>
+  <head>
+  </head>
+  <body>
+
+  <!--img src="https://raw.githubusercontent.com/MathiasHarrer/Doing-Meta-Analysis-in-R/master/banner.jpg" alt="banner" /-->
+
+
+      </body>
+      </html>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="meta-analysis-is-multi-level-optional.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="metaforest.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["Doing_Meta_Analysis_in_R.pdf"],
+"toc": {
+"collapse": "section"
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

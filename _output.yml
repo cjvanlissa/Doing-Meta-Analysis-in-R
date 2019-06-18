@@ -4,14 +4,4 @@ bookdown::gitbook:
     toc:
       before: |
         <li><a href="./">Doing Meta-Analysis in R</a></li>
-      after: |
-        <li><a href="https://protectlab.org" target="blank">© PROTECT Lab</a></li>
-    edit: https://github.com/MathiasHarrer/Doing-Meta-Analysis-in-R/blob/master/%s
     download: ["pdf"]
-bookdown::pdf_book:
-  includes:
-    in_header: preamble.tex
-  latex_engine: xelatex
-  citation_package: natbib
-  keep_tex: yes
-bookdown::epub_book: default

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>5.2 Random-Effects-Model | Doing Meta-Analysis in R and exploring heterogeneity using metaforest</title>
+  <meta name="description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="5.2 Random-Effects-Model | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5.2 Random-Effects-Model | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  
+  <meta name="twitter:description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
+  
+
+<meta name="author" content="Caspar van Lissa¹">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="prev" href="fixedef.html">
+<link rel="next" href="forest-plots.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+<link rel="stylesheet" href="font-awesome.min.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Doing Meta-Analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About this Guide</a></li>
+<li class="chapter" data-level="2" data-path="preparing-for-the-course.html"><a href="preparing-for-the-course.html"><i class="fa fa-check"></i><b>2</b> Preparing for the course</a><ul>
+<li class="chapter" data-level="2.1" data-path="RStudio.html"><a href="RStudio.html"><i class="fa fa-check"></i><b>2.1</b> Getting RStudio to run on your computer</a></li>
+<li class="chapter" data-level="2.2" data-path="starting-a-new-project-in-rstudio.html"><a href="starting-a-new-project-in-rstudio.html"><i class="fa fa-check"></i><b>2.2</b> Starting a new project in Rstudio</a></li>
+<li class="chapter" data-level="2.3" data-path="additional-resources-optional.html"><a href="additional-resources-optional.html"><i class="fa fa-check"></i><b>2.3</b> Additional resources (optional)</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="additional-resources-optional.html"><a href="additional-resources-optional.html#getting-help"><i class="fa fa-check"></i><b>2.3.1</b> Getting Help</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="getting-your-data-into-r.html"><a href="getting-your-data-into-r.html"><i class="fa fa-check"></i><b>3</b> Getting your data into R</a><ul>
+<li class="chapter" data-level="3.1" data-path="what-should-be-in-the-file.html"><a href="what-should-be-in-the-file.html"><i class="fa fa-check"></i><b>3.1</b> What should be in the file</a></li>
+<li class="chapter" data-level="3.2" data-path="importing-excel-files.html"><a href="importing-excel-files.html"><i class="fa fa-check"></i><b>3.2</b> Importing Excel Files</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="importing-excel-files.html"><a href="importing-excel-files.html#inspect-the-data"><i class="fa fa-check"></i><b>3.2.1</b> Inspect the data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="importing-spss-files-optional.html"><a href="importing-spss-files-optional.html"><i class="fa fa-check"></i><b>3.3</b> Importing SPSS Files (optional)</a></li>
+<li class="chapter" data-level="3.4" data-path="data-manipulation-optional.html"><a href="data-manipulation-optional.html"><i class="fa fa-check"></i><b>3.4</b> Data manipulation (optional)</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="data-manipulation-optional.html"><a href="data-manipulation-optional.html#convertfactors"><i class="fa fa-check"></i><b>3.4.1</b> Converting to factors</a></li>
+<li class="chapter" data-level="3.4.2" data-path="data-manipulation-optional.html"><a href="data-manipulation-optional.html#select"><i class="fa fa-check"></i><b>3.4.2</b> Selecting specific studies</a></li>
+<li class="chapter" data-level="3.4.3" data-path="data-manipulation-optional.html"><a href="data-manipulation-optional.html#changing-cell-values"><i class="fa fa-check"></i><b>3.4.3</b> Changing cell values</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="calc.html"><a href="calc.html"><i class="fa fa-check"></i><b>4</b> Calculating Effect Sizes</a><ul>
+<li class="chapter" data-level="4.1" data-path="fixed.html"><a href="fixed.html"><i class="fa fa-check"></i><b>4.1</b> Calculating standardized mean differences</a></li>
+<li class="chapter" data-level="4.2" data-path="formula.html"><a href="formula.html"><i class="fa fa-check"></i><b>4.2</b> From formulas</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="pool.html"><a href="pool.html"><i class="fa fa-check"></i><b>5</b> Pooling Effect Sizes</a><ul>
+<li class="chapter" data-level="5.1" data-path="fixedef.html"><a href="fixedef.html"><i class="fa fa-check"></i><b>5.1</b> Fixed-Effects-Model</a></li>
+<li class="chapter" data-level="5.2" data-path="random.html"><a href="random.html"><i class="fa fa-check"></i><b>5.2</b> Random-Effects-Model</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="random.html"><a href="random.html#tau2"><i class="fa fa-check"></i><b>5.2.1</b> Estimators for <em>tau<sup>2</sup></em> in the random-effects-model</a></li>
+<li class="chapter" data-level="5.2.2" data-path="random.html"><a href="random.html#random.precalc"><i class="fa fa-check"></i><b>5.2.2</b> Conducting the analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="forest-plots.html"><a href="forest-plots.html"><i class="fa fa-check"></i><b>6</b> Forest Plots</a><ul>
+<li class="chapter" data-level="6.1" data-path="generating-a-forest-plot.html"><a href="generating-a-forest-plot.html"><i class="fa fa-check"></i><b>6.1</b> Generating a Forest Plot</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="generating-a-forest-plot.html"><a href="generating-a-forest-plot.html#prediction-interval"><i class="fa fa-check"></i><b>6.1.1</b> Prediction interval</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="saving-the-forest-plot.html"><a href="saving-the-forest-plot.html"><i class="fa fa-check"></i><b>6.2</b> Saving the forest plot</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="heterogeneity.html"><a href="heterogeneity.html"><i class="fa fa-check"></i><b>7</b> Between-study Heterogeneity</a><ul>
+<li class="chapter" data-level="7.1" data-path="heterogeneity-statistics.html"><a href="heterogeneity-statistics.html"><i class="fa fa-check"></i><b>7.1</b> Heterogeneity statistics</a></li>
+<li class="chapter" data-level="7.2" data-path="assessing-the-heterogeneity-of-your-pooled-effect-size.html"><a href="assessing-the-heterogeneity-of-your-pooled-effect-size.html"><i class="fa fa-check"></i><b>7.2</b> Assessing the heterogeneity of your pooled effect size</a></li>
+<li class="chapter" data-level="7.3" data-path="detecting-outliers-influential-cases.html"><a href="detecting-outliers-influential-cases.html"><i class="fa fa-check"></i><b>7.3</b> Detecting outliers &amp; influential cases</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="detecting-outliers-influential-cases.html"><a href="detecting-outliers-influential-cases.html#outliers"><i class="fa fa-check"></i><b>7.3.1</b> Searching for extreme effect sizes (outliers)</a></li>
+<li class="chapter" data-level="7.3.2" data-path="detecting-outliers-influential-cases.html"><a href="detecting-outliers-influential-cases.html#sensitivity-analysis"><i class="fa fa-check"></i><b>7.3.2</b> Sensitivity analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="subgroup.html"><a href="subgroup.html"><i class="fa fa-check"></i><b>8</b> Subgroup Analyses</a><ul>
+<li class="chapter" data-level="8.1" data-path="mixed.html"><a href="mixed.html"><i class="fa fa-check"></i><b>8.1</b> Mixed-Effects-Model</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="mixed.html"><a href="mixed.html#regression-specification"><i class="fa fa-check"></i><b>8.1.1</b> Regression specification</a></li>
+<li class="chapter" data-level="8.1.2" data-path="mixed.html"><a href="mixed.html#t-test-on-the-coefficients"><i class="fa fa-check"></i><b>8.1.2</b> T-test on the coefficients</a></li>
+<li class="chapter" data-level="8.1.3" data-path="mixed.html"><a href="mixed.html#free-variance-per-group"><i class="fa fa-check"></i><b>8.1.3</b> Free variance per group</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="metareg.html"><a href="metareg.html"><i class="fa fa-check"></i><b>9</b> Meta-Regression</a><ul>
+<li class="chapter" data-level="9.1" data-path="meta-regression-in-r.html"><a href="meta-regression-in-r.html"><i class="fa fa-check"></i><b>9.1</b> Meta-regression in R</a></li>
+<li class="chapter" data-level="9.2" data-path="plotting-regressions.html"><a href="plotting-regressions.html"><i class="fa fa-check"></i><b>9.2</b> Plotting regressions</a></li>
+<li class="chapter" data-level="9.3" data-path="multiple-meta-regression.html"><a href="multiple-meta-regression.html"><i class="fa fa-check"></i><b>9.3</b> Multiple Meta-Regression</a></li>
+<li class="chapter" data-level="9.4" data-path="interactions.html"><a href="interactions.html"><i class="fa fa-check"></i><b>9.4</b> Interactions</a></li>
+<li class="chapter" data-level="9.5" data-path="pitfalls.html"><a href="pitfalls.html"><i class="fa fa-check"></i><b>9.5</b> Common pitfalls</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="publication-bias.html"><a href="publication-bias.html"><i class="fa fa-check"></i><b>10</b> Publication Bias</a><ul>
+<li class="chapter" data-level="10.1" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html"><i class="fa fa-check"></i><b>10.1</b> Detecting publication bias</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#funnel-plots"><i class="fa fa-check"></i><b>10.1.1</b> Funnel plots</a></li>
+<li class="chapter" data-level="10.1.2" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#contour-enhanced-funnel-plots"><i class="fa fa-check"></i><b>10.1.2</b> Contour-enhanced funnel plots</a></li>
+<li class="chapter" data-level="10.1.3" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#testing-for-funnel-plot-asymmetry-using-eggers-test"><i class="fa fa-check"></i><b>10.1.3</b> Testing for funnel plot asymmetry using Egger’s test</a></li>
+<li class="chapter" data-level="10.1.4" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#dant"><i class="fa fa-check"></i><b>10.1.4</b> Duval &amp; Tweedie’s trim-and-fill procedure</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="multilevel-meta-analysis.html"><a href="multilevel-meta-analysis.html"><i class="fa fa-check"></i><b>11</b> “Multilevel” Meta-Analysis</a><ul>
+<li class="chapter" data-level="11.1" data-path="meta-analysis-is-multi-level-optional.html"><a href="meta-analysis-is-multi-level-optional.html"><i class="fa fa-check"></i><b>11.1</b> Meta-Analysis is multi-level (optional)</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="meta-analysis-is-multi-level-optional.html"><a href="meta-analysis-is-multi-level-optional.html#three-level-meta-analytic-models"><i class="fa fa-check"></i><b>11.1.1</b> Three-level meta-analytic models</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html"><i class="fa fa-check"></i><b>11.2</b> Fitting a three-level model</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html#data-preparation"><i class="fa fa-check"></i><b>11.2.1</b> Data preparation</a></li>
+<li class="chapter" data-level="11.2.2" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html#model-fitting"><i class="fa fa-check"></i><b>11.2.2</b> Model fitting</a></li>
+<li class="chapter" data-level="11.2.3" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html#distribution-of-total-variance"><i class="fa fa-check"></i><b>11.2.3</b> Distribution of total variance</a></li>
+<li class="chapter" data-level="11.2.4" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html#comparing-the-fit"><i class="fa fa-check"></i><b>11.2.4</b> Comparing the fit</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="metaforest.html"><a href="metaforest.html"><i class="fa fa-check"></i><b>12</b> Exploring heterogeneity</a><ul>
+<li class="chapter" data-level="12.1" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html"><i class="fa fa-check"></i><b>12.1</b> Understanding random forests</a><ul>
+<li class="chapter" data-level="12.1.1" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html#meta-analytic-random-forests"><i class="fa fa-check"></i><b>12.1.1</b> Meta-analytic random forests</a></li>
+<li class="chapter" data-level="12.1.2" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html#tuning-parameters"><i class="fa fa-check"></i><b>12.1.2</b> Tuning parameters</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="using-metaforest.html"><a href="using-metaforest.html"><i class="fa fa-check"></i><b>12.2</b> Using MetaForest</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="using-metaforest.html"><a href="using-metaforest.html#checking-convergence"><i class="fa fa-check"></i><b>12.2.1</b> Checking convergence</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="model-tuning.html"><a href="model-tuning.html"><i class="fa fa-check"></i><b>12.3</b> Model tuning</a><ul>
+<li class="chapter" data-level="12.3.1" data-path="model-tuning.html"><a href="model-tuning.html#variable-importance"><i class="fa fa-check"></i><b>12.3.1</b> Variable importance</a></li>
+<li class="chapter" data-level="12.3.2" data-path="model-tuning.html"><a href="model-tuning.html#partial-dependence"><i class="fa fa-check"></i><b>12.3.2</b> Partial dependence</a></li>
+</ul></li>
+<li class="chapter" data-level="12.4" data-path="what-to-report.html"><a href="what-to-report.html"><i class="fa fa-check"></i><b>12.4</b> What to report</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Doing Meta-Analysis in R and exploring heterogeneity using metaforest</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="random" class="section level2">
+<h2><span class="header-section-number">5.2</span> Random-Effects-Model</h2>
+<p>We can only use the fixed-effect-model when we can assume that <strong>all included studies tap into one true effect size</strong>. In practice this is hardly ever the case: interventions may vary in certain characteristics, the sample used in each study might be slightly different, or its methods. A more appropriate assumption in these cases might be that the true effect size follows a normal distribution.</p>
+<div class="rmdinfo">
+<p>
+<strong>The Idea behind the Random-Effects-Model</strong>
+</p>
+<p>
+In the Random-Effects-Model, we want to account for our assumption that the population effect size is normally distributed <span class="citation"><span class="citation">(Schwarzer, Carpenter, and Rücker <a href="#ref-schwarzer2015meta">2015</a>)</span></span>. The random-effects-model works under the so-called <strong>assumption of exchangeability</strong>.
+</p>
+<p>
+This means that in Random-Effects-Model Meta-Analyses, we not only assume that effects of individual studies deviate from the true intervention effect of all studies due to sampling error, but that there is another source of variance introduced by the fact that the studies do not stem from one single population, but are drawn from a “universe” of populations. We therefore assume that there is not only one true effect size, but <strong>a distribution of true effect sizes</strong>. We therefore want to estimate the mean and variance of this distribution of true effect sizes.
+</p>
+<p>
+The fixed-effect-model assumes that when the observed effect size <span class="math inline"><span class="math inline">\(\hat\theta_k\)</span></span> of an individual study <span class="math inline"><span class="math inline">\(k\)</span></span> deviates from the true effect size <span class="math inline"><span class="math inline">\(\theta_F\)</span></span>, the only reason for this is that the estimate is burdened by (sampling) error <span class="math inline"><span class="math inline">\(\epsilon_k\)</span></span>.
+</p>
+<p>
+<span class="math display"><span class="math display">\[\hat\theta_k = \theta_F + \epsilon_k\]</span></span>
+</p>
+<p>
+While the random-effects-model assumes that, in addition, there is <strong>a second source of error</strong> <span class="math inline"><span class="math inline">\(\zeta_k\)</span></span>.This second source of error is introduced by the fact that even the true effect size <span class="math inline"><span class="math inline">\(\theta_k\)</span></span> of our study <span class="math inline"><span class="math inline">\(k\)</span></span> is also only part of an over-arching distribution of true effect sizes with the mean <span class="math inline"><span class="math inline">\(\mu\)</span></span> <span class="citation"><span class="citation">(Borenstein et al. <a href="#ref-borenstein2011">2011</a>)</span></span>.
+</p>
+</div>
+<p><img src="Doing_Meta_Analysis_in_R_files/figure-html/unnamed-chunk-44-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p style="text-align: center;">
+<em>An illustration of parameters of the random-effects-model</em>
+</p>
+<div class="rmdinfo">
+<p>
+The formula for the random-effects-model therefore looks like this:
+</p>
+<p>
+<span class="math display"><span class="math display">\[\hat\theta_k = \mu + \epsilon_k + \zeta_k\]</span></span>
+</p>
+<p>
+When calculating a random-effects-model meta-analysis, where therefore also have to take the error <span class="math inline"><span class="math inline">\(\zeta_k\)</span></span> into account. To do this, we have to <strong>estimate the variance of the distribution of true effect sizes</strong>, which is denoted by <span class="math inline"><span class="math inline">\(\tau^{2}\)</span></span>, or <em>tau<sup>2</sup></em>. There are several estimators for <span class="math inline"><span class="math inline">\(\tau^{2}\)</span></span>, all of which are implemented in <code>metafor</code>.
+</p>
+</div>
+<div class="rmdachtung">
+<p>
+Even though it is <strong>conventional</strong> to use random-effects-model meta-analyses in psychological outcome research, applying this model is <strong>not undisputed</strong>. The random-effects-model pays <strong>more attention to small studies</strong> when pooling the overall effect in a meta-analysis <span class="citation"><span class="citation">(Schwarzer, Carpenter, and Rücker <a href="#ref-schwarzer2015meta">2015</a>)</span></span>. Yet, small studies in particular are often fraught with <strong>bias</strong> (see <a href="smallstudyeffects.html#smallstudyeffects">Chapter 8.1</a>). This is why some have argued that the fixed-effects-model should be nearly always preferred <span class="citation"><span class="citation">(Poole and Greenland <a href="#ref-poole1999">1999</a>; Furukawa, McGuire, and Barbui <a href="#ref-furukawa2003">2003</a>)</span></span>.
+</p>
+</div>
+<div id="tau2" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Estimators for <em>tau<sup>2</sup></em> in the random-effects-model</h3>
+<p>Operationally, conducting a random-effects-model meta-analysis in R is not so different from conducting a fixed-effects-model meta-analyis. Yet, we do have choose an estimator for <span class="math inline">\(\tau^{2}\)</span>. Here are the estimators implemented in <code>metafor</code>, which we can choose using the <code>method</code> argument when calling the function.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Code
+</th>
+<th style="text-align:left;">
+Estimator
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+DL
+</td>
+<td style="text-align:left;">
+DerSimonian-Laird
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PM
+</td>
+<td style="text-align:left;">
+Paule-Mandel
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+REML
+</td>
+<td style="text-align:left;">
+Restricted Maximum-Likelihood
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ML
+</td>
+<td style="text-align:left;">
+Maximum-likelihood
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HS
+</td>
+<td style="text-align:left;">
+Hunter-Schmidt
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SJ
+</td>
+<td style="text-align:left;">
+Sidik-Jonkman
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HE
+</td>
+<td style="text-align:left;">
+Hedges
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EB
+</td>
+<td style="text-align:left;">
+Empirical Bayes
+</td>
+</tr>
+</tbody>
+</table>
+<div class="rmdinfo">
+<p>
+<strong>Which estimator should I use?</strong>
+</p>
+<p>
+All of these estimators derive <span class="math inline"><span class="math inline">\(\tau^{2}\)</span></span> using a slightly different approach, leading to somewhat different pooled effect size estimates and confidence intervals. If one of these approaches is more or less biased often depends on the context, and parameters such as the number of studies <span class="math inline"><span class="math inline">\(k\)</span></span>, the number of participants <span class="math inline"><span class="math inline">\(n\)</span></span> in each study, how much <span class="math inline"><span class="math inline">\(n\)</span></span> varies from study to study, and how big <span class="math inline"><span class="math inline">\(\tau^{2}\)</span></span> is.
+</p>
+<p>
+An overview paper by Veroniki and colleagues <span class="citation"><span class="citation">(Veroniki et al. <a href="#ref-veroniki2016methods">2016</a>)</span></span> provides an excellent summary on current evidence which estimator might be more or less biased in which situation. The article is openly accessible, and you can read it <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4950030/">here</a>. This paper suggests that the <strong>Restricted Maximum-Likelihood</strong> estimator performs best, and it is the default estimator in metafor.
+</p>
+</div>
+</div>
+<div id="random.precalc" class="section level3">
+<h3><span class="header-section-number">5.2.2</span> Conducting the analysis</h3>
+<p>Random-effects meta-analyses are very easy to code in R. Compared to the fixed-effects-model <a href="fixedef.html#fixedef">Chapter 5.1</a>, we can simply remove the <code>method = &quot;FE&quot;</code> argument, if we want to use the default REML estimator:</p>
+<pre class="sourceCode r"><code class="sourceCode r">m_re &lt;-<span class="st"> </span><span class="kw">rma</span>(<span class="dt">yi =</span> df<span class="op">$</span>d,     <span class="co"># The d-column of the df, which contains Cohen&#39;s d</span>
+            <span class="dt">vi =</span> df<span class="op">$</span>vi)    <span class="co"># The vi-column of the df, which contains the variances</span>
+m_re</code></pre>
+<pre><code>## 
+## Random-Effects Model (k = 56; tau^2 estimator: REML)
+## 
+## tau^2 (estimated amount of total heterogeneity): 0.0570 (SE = 0.0176)
+## tau (square root of estimated tau^2 value):      0.2388
+## I^2 (total heterogeneity / total variability):   67.77%
+## H^2 (total variability / sampling variability):  3.10
+## 
+## Test for Heterogeneity: 
+## Q(df = 55) = 156.9109, p-val &lt; .0001
+## 
+## Model Results:
+## 
+## estimate      se    zval    pval   ci.lb   ci.ub     
+##   0.2393  0.0414  5.7805  &lt;.0001  0.1581  0.3204  ***
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The output shows that our estimated effect is <span class="math inline">\(g=0.2393\)</span>, and the 95% confidence interval stretches from <span class="math inline">\(g=0.16\)</span> to <span class="math inline">\(0.32\)</span> (rounded). The estimated heterogeneity is <span class="math inline">\(\tau^2 = 0.06\)</span>. The percentage of variation across effect sizes that is due to heterogeneity rather than change is estimated at <span class="math inline">\(I^2 = 67.77\%\)</span>.</p>
+<p>The summary effect estimate is different (and larger) than the one we found in the fixed-effects-model meta-analysis in <a href="fixedef.html#fixedef">Chapter 5.1</a> (<span class="math inline">\(g=0.21\)</span>).</p>
+
+</div>
+</div>
+<!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-schwarzer2015meta">
+<p>Schwarzer, Guido, James R Carpenter, and Gerta Rücker. 2015. <em>Meta-Analysis with R</em>. Springer.</p>
+</div>
+<div id="ref-borenstein2011">
+<p>Borenstein, Michael, Larry V Hedges, Julian PT Higgins, and Hannah R Rothstein. 2011. <em>Introduction to Meta-Analysis</em>. John Wiley &amp; Sons.</p>
+</div>
+<div id="ref-poole1999">
+<p>Poole, Charles, and Sander Greenland. 1999. “Random-Effects Meta-Analyses Are Not Always Conservative.” <em>American Journal of Epidemiology</em> 150 (5). Oxford University Press: 469–75.</p>
+</div>
+<div id="ref-furukawa2003">
+<p>Furukawa, Toshi A, Hugh McGuire, and Corrado Barbui. 2003. “Low Dosage Tricyclic Antidepressants for Depression.” <em>Cochrane Database of Systematic Reviews</em>, no. 3. John Wiley &amp; Sons, Ltd.</p>
+</div>
+<div id="ref-veroniki2016methods">
+<p>Veroniki, Areti Angeliki, Dan Jackson, Wolfgang Viechtbauer, Ralf Bender, Jack Bowden, Guido Knapp, Oliver Kuss, Julian PT Higgins, Dean Langan, and Georgia Salanti. 2016. “Methods to Estimate the Between-Study Variance and Its Uncertainty in Meta-Analysis.” <em>Research Synthesis Methods</em> 7 (1). Wiley Online Library: 55–79.</p>
+</div>
+</div>
+<!DOCTYPE html>
+  <html>
+  <head>
+  </head>
+  <body>
+
+  <!--img src="https://raw.githubusercontent.com/MathiasHarrer/Doing-Meta-Analysis-in-R/master/banner.jpg" alt="banner" /-->
+
+
+      </body>
+      </html>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="fixedef.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="forest-plots.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["Doing_Meta_Analysis_in_R.pdf"],
+"toc": {
+"collapse": "section"
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

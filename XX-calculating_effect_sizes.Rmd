@@ -41,7 +41,7 @@ formulas to compute many different effect sizes. A detailed explanation,
 with references to the formulas used, can be found by selecting the function,
 and pressing F1.
 
-```{r}
+```{r, results = "hide"}
 df_smd <- escalc(measure = "SMD",
                  m1i = m1i,
                  m2i = m2i,
