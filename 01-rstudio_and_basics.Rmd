@@ -37,8 +37,8 @@ As a prerequisite for this guide, you need to have **RStudio** and a few essenti
 
 ```{r,echo=FALSE}
 library(kableExtra)
-Package<-c("tidyverse","meta","metaforest")
-Description<-c("This is a large package containing various functions to tidy up your data", "This package is a so-called wrapper for many meta-analytic functions and makes it easy to code different meta-analyses","This package is used to explore heterogeneity using the random forests algorithm. It also installs the R-package 'metafor', which is one of the most commonly used meta-analysis packages.")
+Package<-c("tidyverse", "metaforest", "caret")
+Description<-c("This is a large package containing various functions to tidy up your data", "This package is used to explore heterogeneity using the random forests algorithm. It also installs the R-package 'metafor', which is one of the most commonly used meta-analysis packages.", "This package is an all-purpose machine learning interface, which we will use for model tuning in the chapter on MetaForest.")
 m<-data.frame(Package,Description)
 names<-c("Package", "Description")
 colnames(m)<-names
