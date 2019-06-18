@@ -3,160 +3,112 @@
 ![](chappool.jpg)
 
 ```{block,type='rmdinfo'}
-This chapter will tell you about how you can **import** your effect size data in RStudio. We will also show you a few commands which make it easier to **manipulate data** directly in R.
-
-Data preparation can be tedious and exhausting at times, but it is the backbone of all later steps when doing meta-analyses in R. We therefore have to pay **close attention** to preparing the data correctly before we can proceed.
-
+This chapter will tell you about how you can **import** your effect size data in RStudio. We will also show you a few commands to **manipulate data** directly in R.
 
 ```
 
-<br><br>
 
----
+## What should be in the file
 
-## Data preparation in Excel
+To conduct Meta-Analyses in R, you need to have your study data prepared. In primary analysis, you might have a file with rows for people, and columns for variables. In meta-analysis, you will have a file with a row for each **effect size**. The columns often include the following information:
 
-### Setting the columns of the excel spreadsheet {#excel_preparation}
+* The **names** of the individual studies, so that they can be easily identified later on. You can use the full reference, or just the first author and publication year of a study (e.g. "Ebert et al., 2018")
+* The calculated **effect size** of the study (either Cohen's d or Hedges' g, or some other form of effect size
+* The **Standard Error** (SE) or **sampling variance** of the calculated effect
+* Often, you do not have the effect size and the variance of the effect size yet. In that case, you need the statistics required to compute it. This could be:
+    + The **correlation** coefficient and **number of participants (N)**
+    + The **Mean** of both the Intervention and the Control group at the same assessment point
+    + The **Standard Deviation** of both the Intervention and the Control group at the same assessment point
+    + The **number of participants (N)** in each group of the trial
+* Any coded moderators. E.g., if you want to have a look at differences between various study subgroups later on, you also need a **subgroup code** for each study which signifies to which subgroup it belongs. For example, if a study was conducted in children, you might give it the subgroup code "children". Continuous moderators can be included in the same way; e.g., the proportion of men in the sample.
 
-To conduct Meta-Analyses in R, you need to have your study data prepared. For a standard meta-analysis, the following information is needed for every study.
+Working with R, the easiest way is often to store data in **EXCEL spreadsheets**, but R can read nearly any input format. Google is your friend.
 
-* The **names** of the individual studies, so that they can be easily identified later on. Usually, the first author and publication year of a study is used for this (e.g. "Ebert et al., 2018")
-* The **Mean** of both the Intervention and the Control group at the same assessment point
-* The **Standard Deviation** of both the Intervention and the Control group at the same assessment point
-* The **number of participants (N)** in each group of the trial
-* If you want to have a look at differences between various study subgroups later on, you also need a **subgroup code** for each study which signifies to which subgroup it belongs. For example, if a study was conducted in children, you might give it the subgroup code "children".
-
-  
-As per usual, such data is stored in **EXCEL spreadsheets**. We recommend to store your data there, because this makes it very easy to import data into RStudio.
+One advantage of using an **R project** is that the project directory is automatically set as the working directory. Just copy your data file to the folder that contains the *".Rproj"* file, and you will be able to load files by name.
 
 
-However, it is very important how you **name the columns of your spreadsheet**. If you name the columns of your sheet adequately in EXCEL already, you can save a lot of time because your data doesn't have to be transformed in RStudio later on. 
 
-**Here is how you should name the data columns in your EXCEL spreadheet containing your Meta-Analysis data**
-  
+## Importing Excel Files
 
-```{r,echo=FALSE}
-library(kableExtra)
-Package<-c("Author","Me","Se","Mc","Sc","Ne","Nc","Subgroup")
-Description<-c("This signifies the column for the study label (i.e., the first author)","The Mean of the experimental/intervention group","The Standard Deviation of the experimental/intervention group","The Mean of the control group","The Standard Deviation of the control group","The number of participants in the experimental/intervention group","The number of participats in the control group","This is the label for one of your Subgroup codes. It's not that important how you name it, so you can give it a more informative name (e.g. population). In this column, each study should then be given an subgroup code, which should be exactly the same for each subgroup, including upper/lowercase letters. Of course, you can also include more than one subgroup column with different subgroup codings, but the column name has to be unique")
-m<-data.frame(Package,Description)
-names<-c("Column", "Description")
-colnames(m)<-names
-kable(m)
+One way to get Excel files directly into R is by using the XLConnect package. For this example, you will need the *"happy.xlsx"* file. Check if the file is in your project directory. If not, you can download it from https://github.com/cjvanlissa/Doing-Meta-Analysis-in-R.
+
+Install the package, and try using the readWorksheetFromFile() function to load the data, and assign it to an object called `df`:
+
+```{r, eval = FALSE}
+# Run this only once, to download and install the package:
+install.packages("XLConnect")
+# Load the package:
+library(XLConnect)
+# Read the 'Happy to help' Excel file into 'df':
+df <- readWorksheetFromFile("happy.xlsx",
+                            sheet = 1)
 ```
 
-Note that it **doesn't matter how these columns are ordered in your EXCEL spreadsheet**. They just have to be labeled correctly.
-
-There's also no need to **format** the columns in any way. If you type the column name in the first line of you spreadsheet, R will automatically detect it as a column name.
-
-```{block,type='rmdachtung'}
-It's also important to know that the import **will distort letters like ä,ü,ö,á,é,ê, etc**. So be sure to transform them to "normal" letters before you proceed.
+```{r, echo=FALSE, results = "hide", message=FALSE}
+library(XLConnect)
+df <- readWorksheetFromFile("happy.xlsx",
+                            sheet = 1)
 ```
 
-### Setting the columns of your sheet if you have calculated the effect sizes of each study already
+### Inspect the data
 
-If you have **already calculated the effect sizes for each study on your own**, for example using *Comprehensive Meta-Analysis* or *RevMan*, there's another way to prepare your data which makes things a little easier. In this case, you only have to include the following columns:
+R does not work with a single spreadsheet (SPSS or Excel). Instead, it can keep many objects in memory. The object `df` is a `data.frame`; an object that behaves similar to a spreadsheet. To see a description of the object, look at the *Environment* tab in the top right of Rstudio, and click the arrow next to `df`.
 
-```{r,echo=FALSE}
-library(kableExtra)
-Package.cma<-c("Author","TE","seTE","Subgroup")
-Description.cma<-c("This signifies the column for the study label (i.e., the first author)","The calculated effect size of the study (either Cohen's d or Hedges' g, or some other form of effect size","The Standard Error (SE) of the calculated effect","This is the label for one of your Subgroup codes. It's not that important how you name it, so you can give it a more informative name (e.g. population). In this column, each study should then be given an subgroup code, which should be exactly the same for each subgroup, including upper/lowercase letters. Of course, you can also include more than one subgroup column with different subgroup codings, but the column name has to be unique")
-m.cma<-data.frame(Package.cma,Description.cma)
-names.cma<-c("Column", "Description")
-colnames(m.cma)<-names.cma
-kable(m.cma)
-```
-
-<br><br>
-
----
-
-## Importing the Spreadsheet into Rstudio {#import_excel}
-
-To get our data into R, we need to **save our data in a format and at a place where RStudio can open it**.
-
-### Saving the data in the right format
-
-Generelly, finding the right format to import EXCEL can be tricky.
-
-* If you're using a PC or Mac, it is advised to save your EXCEL sheet as a **comma-separated-values (.csv) file**. This can be done by clicking on "save as" and then choosing (.csv) as the output format in EXCEL.
-* With some PCs, RStudios might not be able to open such files, or the files might be distorted. In this case, you can also try to save the sheet as a normal **.xslx** EXCEL-file and try if this works.
-
-### Saving the data in your working directory
-
-To function properly, you have to set a working directory for RStudio first. The working directory is a **folder on your computer from which RStudio can use data, and in which output it saved**. 
-
-1. Therefore, create a folder on your computer and give it a meaningful name (e.g. "My Meta-Analysis").
-2. Save your spreadsheet in the folder
-3. Set the folder as your working directory. This can be done in RStudio on the **bottom-right corner of your screen**. Under the tile **"Files"**, search for the folder on your computer, and open it.
-4. Once you've opened your folder, the file you just saved there should be in there.
-5. Now that you've opened the folder, click on the **little gear wheel on top of the pane**
-
-```{r, echo=FALSE, fig.width=4,fig.height=3}
+```{r, echo=FALSE}
 library(png)
 library(grid)
-img <- readPNG("snippet.PNG")
-grid.raster(img)
-```
-
-6. Then click on "**Set as working directory**"
-
-**Your file, and the working directory, are now where they should be!**
-
-### Loading the data
-
-1. To import the data, simply **click on the file** in the bottom-right pane. Then click on **import dataset...**
-2. An **import assistant** should now pop up, which is also loading a preview of your data. This can be time-consuming sometimes, so you can skip this step if you want to, and klick straight on **"import"**
-
-```{r, echo=FALSE, fig.width=7,fig.height=3}
-library(png)
-library(grid)
-img <- readPNG("snippet_3.PNG")
+img <- readPNG("environment.PNG")
 grid.raster(img)
 ```
 
 As you can see, the on the top-right pane **Environment**, your file is now listed as a data set in your RStudio environment.
 
-3. I also want to give my data a shorter name ("madata"). To rename it, i use the following code:
+You can make a quick copy of this data set by assigning the `df` object to a new object. This way, you can edit one, and leave the other unchanged. Assign the object `df` to a new object called `happy`:
 
-```{r, echo=FALSE}
-load("Meta_Analysis_Data.RData")
-```
 
 ```{r}
-madata<-Meta_Analysis_Data
+happy <- df
 ```
 
-4. Now, let's have a look at the **structure of my data** using the `str()` function
+You can also have a look at the contents of `df` by **clicking** the object in the Environment panel, or running the command `head(df)`:
 
-```{r}
-str(madata)
-```
-
-Although this output looks kind of messy, it's already very informative. It shows the structure of my data. In this case, i used data for which the effect sizes were already calculated. This is why the variables **TE** and **seTE** appear. I also see plenty of other variables, which correspond to the subgroups which were coded for this dataset.
-
-**Here's a (shortened) table created for my data**
+**Here's a (shortened) table for the data**
 
 ```{r, echo=FALSE}
-madata.s<-madata
-madata.s$population=NULL
-madata.s$`type of students`=NULL
-madata.s$`prevention type`=NULL
-madata.s$gender=NULL
-madata.s$`mode of delivery`=NULL
-madata.s$`ROB streng`=NULL
-madata.s$`ROB superstreng`=NULL
-madata.s$compensation=NULL
-madata.s$instruments=NULL
-madata.s$guidance=NULL
-kable(madata.s)
+madata.s<-df
+madata.s$donor=NULL
+madata.s$`interventioniv`=NULL
+madata.s$`control`=NULL
+madata.s$outcomedv=NULL
+madata.s$`effect_id`=NULL
+
+kable(head(madata.s))
 ```
   
 <br><br>
 
 ---
 
-## Data manipulation
+
+## Importing SPSS Files (optional)
+
+SPSS files can be loaded using the `foreign` package:
+
+```{r, eval = FALSE}
+# Install the package, run this only once
+install.packages("foreign")
+
+# Load the `foreign` library
+library(foreign)
+
+# Read the SPSS data
+df_spss <- read.spss("problem3.sav",
+                     to.data.frame = TRUE,
+                     use.value.labels = FALSE)
+```
+
+
+## Data manipulation (optional)
 
 Now that we have the Meta-Analysis data in RStudio, let's do a **few manipulations with the data**. These functions might come in handy when were conducting analyses later on.
 
@@ -176,58 +128,23 @@ kable(m)
 
 ### Converting to factors {#convertfactors}
 
-Let's say we have the subgroup **Risk of Bias** (in which the Risk of Bias rating is coded), and want it to be a factor with two different levels: "low" and "high".
+Let's look at the different kinds of interventions, `df$interventioncode`. We can have a look at this variable by typing the name of our dataset, then adding the selector `$` and then adding the variable we want to have a look at.
+This variable is currently a character vector (text). We want it to be a factor: That's a categorical variable.
 
-To do this, we need to the variable `ROB` to be a factor. However, this variable is currently stored as a character (`chr`). We can have a look at this variable by typing the name of our dataset, then adding the selector `$` and then adding the variable we want to have a look at.
+To convert this to a **factor** variable now, we use the `factor()` function.
 
-```{r,echo=FALSE}
-madata$ROB<-madata$`ROB streng`
+```{r, results = "hide"}
+df$interventioncode <- factor(df$interventioncode)
+df$interventioncode
 ```
+We now see that the variable has been **converted to a factor with the levels "Acts of Kindness, "Other", and "Prosocial Spending"**.
 
-```{r}
-madata$ROB
-str(madata$ROB)
-```
-
-We can see now that `ROB`is indeed a **character** type variable, which contains only two words: "low" and "high". We want to convert this to a **factor** variable now, which has only two levels, low and high. To do this, we use the `factor()` function.
-
-```{r}
-madata$ROB<-factor(madata$ROB)
-madata$ROB
-str(madata$ROB)
-```
-We now see that the variable has been **converted to a factor with the levels "high" and "low"**.
-
-### Converting to logicals
-
-Now lets have a look at the **intervention type** subgroup variable. This variable is currently stores as a character `chr` too.
-
-```{r}
-madata$`intervention type`
-str(madata$`intervention type`)
-```
-
-Let's say we want a variable which only contains information if a study way a mindfulness intervention or not. A logical is very well suited for this. To convert the data to logical, we use the `as.logical` function. We will create a new variable containing this information called `intervention.type.logical`. To tell R what to count as `TRUE` and what as `FALSE`, we have to define the specific intervention type using the `==` command.
-
-```{r}
-intervention.type.logical<-as.logical(madata$`intervention type`=="mindfulness")
-intervention.type.logical
-```
-
-We see that R has converted the character information into trues and falses for us. To check if this was done correctly, let's compare the original and the new variable
-
-```{r}
-n<-data.frame(intervention.type.logical,madata$`intervention type`)
-names<-c("New", "Original")
-colnames(n)<-names
-kable(n)
-```
 
 ### Selecting specific studies {#select}
 
 It may often come in handy to **select certain studies for further analyses**, or to **exclude some studies in further analyses** (e.g., if they are outliers).
 
-To do this, we can use the `filter` function in the `dplyr`package, which is part of the `tidyverse` package we installed before.
+To do this, we can use the `filter` function in the `dplyr` package, which is part of the `tidyverse` package we installed before.
 
 So, let's load the package first.
 
@@ -235,40 +152,28 @@ So, let's load the package first.
 library(dplyr)
 ```
 
-Let's say we want to do a Meta-Analysis with three studies in our dataset only. To do this, we need to create a new dataset containing only these studies using the `dplyr::filter()` function. The `dplyr::` part is necessary as there is more than one ``filter` function in R, and we want to use to use the one of the `dplyr`package.
+Let's say we want to do a Meta-Analysis with studies conducted in the USA, or partly conducted in the USA, only. To do this, we need to create a new dataset containing only these studies using the `dplyr::filter()` function. The `dplyr::` part is necessary as there is more than one ``filter` function in R, and we want to use to use the one of the `dplyr`package.
 
-Let's say we want to have the studies by **Cavanagh et al.**, **Frazier et al.** and **Phang et al.** stored in another dataset, so we can conduct analyses only for these studies.
-
-The R code to store these three studies in a new dataset called `madata.new` looks like this:
+The R code to store these studies in a new dataset called `df_usa` looks like this:
 
 ```{r}
-madata.new<-dplyr::filter(madata,Author %in% c("Cavanagh et al.",
-                                               "Frazier et al.",
-                                               "Phang et al."))
+df_usa <- dplyr::filter(df, location %in% c("USA", "USA/Korea"))
 ```
 
-Note that the `%in%`-Command tells the `filter` function to search for exactly the three cases we defined in the variable `Author`.
-Now, let's have a look at the new data `madata.new` we just created.
+Note that the `%in%`-Command tells the `filter` function to search for cases whose `location` is included in the vector `c("USA", "USA/Korea")`.
+Now, let's have a look at the new data `df_usa` we just created.
 
 ```{r,echo=FALSE}
-kable(madata.new)
+kable(head(df_usa))
 ```
 
 
-Note that the function can also be used for any other type of data and variable. We can also use it to e.g., only select studies which were coded as being a mindfulness study
+Note that the function can also be used for any other type of data and variable. We can also use it to e.g., only select studies where the donors were "typical":
 
 ```{r}
-madata.new.mf<-dplyr::filter(madata,`intervention type` %in% c("mindfulness"))
+df_typical <- dplyr::filter(df, donorcode == "Typical")
 ```
 
-We can also use the `dplyr::filter()` function to exclude studies from our dataset. To do this, we only have to add `!` in front of the variable we want to use for filtering.
-
-```{r}
-madata.new.excl<-dplyr::filter(madata,!Author %in% c("Cavanagh et al.",
-                                                     "Frazier et al.",
-                                                     "Phang et al."))
-
-```
 
 ### Changing cell values
 
@@ -279,19 +184,19 @@ To do this, we have to select a cell in our data frame in RStudio. This can be d
 To see how this works, let's select a variable using this command first:
 
 ```{r}
-madata[6,1]
+df[8,1]
 ```
 
 We now see the **6th study** in our dataframe, and the value of this study for **Column 1 (the author name)** is displayed. Let's say we had a typo in this name and want to have it changed. In this case, we have to give this exact cell a new value.
 
 ```{r}
-madata[6,1]<-"Frogelli et al."
+df[8,1] <- "Aknin, et al. (2012)"
 ```
 
 Let's check if the name has changed.
 
 ```{r}
-madata[6,1]
+df[8,1]
 ```
 
 You can also use this function to change any other type of data, including numericals and logicals. Only for characters, you have to put the values you want to insert in `""`.

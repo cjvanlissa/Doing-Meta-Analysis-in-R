@@ -1,0 +1,118 @@
+# Calculating Effect Sizes {#calc}
+
+![](calculate.jpg)
+
+Papers do not always report the effect sizes exactly the way you want to meta-analyze them. This chapter addresses the basics of calculating effect sizes.
+
+```{block,type='rmdinfo'}
+Meta-Analysis requires an **effect size** and an estimate of the **sampling variance** of that effect size for each study. Papers do not always report the effect size, or they report a different effect size than the one you want to use in your meta-analysis. This chapter addresses the basics of calculating effect sizes.
+```
+
+
+It may not immediately be obvious whether a paper reports the necessecary statistics to calculate an effect size. You will need an 'effect size' and its sampling variance. As a general guideline, ask yourself these questions:
+
+1. Am I meta-analyzing a descriptive statistic (mean, SD, proportion, Cronbach's alpha), a measure of *association* (correlation or bivariate regression coefficient), or a difference (e.g., mean difference)?
+2. Is that statistic reported directly?
+3. Is its variance or SE reported directly?
+4. Do I have the sample size for the total group or for each group I'm comparing?
+5. Are measures of variability reported (e.g., SD for each group)?
+
+If you cannot figure out whether you have sufficient information to calculate the effect size, I recommend contacting a statistician.
+
+Researchers can get quite creative in trying to obtain the relevant information. It is expected that researchers contact authors of papers with incomplete information to request that information. Many journals **require** the authors to provide this information upon request. Moreover, researchers sometimes use an on-screen ruler (e.g., https://www.arulerforwindows.com/) to measure means and SEs from graphs, if these are not reported in the text of the paper.
+
+<br><br>
+
+---
+
+## Calculating standardized mean differences {#fixed}
+
+To calculate standardized mean differences (SMD), we need means, SDs, and sample
+sizes per group. In this example, we'll be looking at the `dat.normand1999`
+dataset included with `metafor`:
+
+```{r,echo=FALSE, message=FALSE}
+library(metafor)
+kable(dat.normand1999[, -1])
+```
+
+To calculate effect sizes, we use the function `metafor::escalc`, which incorporates
+formulas to compute many different effect sizes. A detailed explanation, 
+with references to the formulas used, can be found by selecting the function,
+and pressing F1.
+
+```{r}
+df_smd <- escalc(measure = "SMD",
+                 m1i = m1i,
+                 m2i = m2i,
+                 sd1i = sd1i,
+                 sd2i = sd2i,
+                 n1i = n1i,
+                 n2i = n2i,
+                 data = dat.normand1999)
+df_smd
+```
+
+```{r,echo=FALSE, message=FALSE}
+kable(df_smd[,-1])
+```
+
+Note that the function returns the original data, with two added columns: `yi` 
+and `vi`. These are the SMD effect size and its variance.
+
+## From formulas {#formula}
+
+Sometimes, you want to use a specific formula to calculate the effect size - or
+you just want the formula to be explicit, not hidden away inside `escalc`. You
+can transcribe the formula into R syntax, and compute the effect size manually.
+
+For this example, we use the the `dat.molloy2014` dataset, included with
+`metafor`, which contains correlations, and their sample sizes:
+
+```{r,echo=FALSE}
+kable(dat.molloy2014[, c(1,3,4)])
+```
+
+Because correlations are bounded by [-1, 1], they are often Fisher-transformed
+prior to meta-analysis. The formula for Fisher's *r-to-z* transformation is:
+
+$$
+z = .5 * ln(\frac{1+r}{1-r})
+$$
+
+In R-syntax, that formula is expressed as: `z <- .5 * log((1+r)/(1-r))`.
+
+We can calculate a new column in the data, using this formula, by substituting
+`r` with the column in the data that contains the correlations:
+
+```{r}
+df_cor <- dat.molloy2014
+# Compute new column:
+df_cor$zi <- .5 * log((1+df_cor$ri)/(1-df_cor$ri))
+```
+
+Alternatively, we can store the calculation as a *function*, which makes the 
+code a bit cleaner:
+
+```{r}
+# Create function r_to_z, which takes r as input:
+r_to_z <- function(r){.5 * log((1+r)/(1-r))}
+# Apply the function to compute new column:
+df_cor$zi <- r_to_z(df_cor$ri)
+```
+
+
+The sampling variance for the transformed correlations is:
+
+$$
+V_z = \frac{1}{n-3}
+$$
+
+So by the same process, we can add the sampling variance to the data:
+
+```{r}
+# Create function v_z, which takes n as input:
+v_z <- function(n){1/(n-3)}
+# Apply the function to compute new column:
+df_cor$vi <- v_z(df_cor$ni)
+```

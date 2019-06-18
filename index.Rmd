@@ -1,9 +1,8 @@
 --- 
-title: "Doing Meta-Analysis in R and exploring heterogeneity"
+title: "Doing Meta-Analysis in R and exploring heterogeneity using metaforest"
 subtitle: "A Hands-on Guide"
 author: "Caspar van Lissa¹"
 date: "¹Utrecht University"
-github-repo: "cjvanlissa/Doing-Meta-Analysis-in-R"
 site: bookdown::bookdown_site
 output: 
   bookdown::gitbook:
@@ -21,7 +20,7 @@ documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-description: "This is a guide on how to conduct Meta-Analysis in R."
+description: "This is a fork of the book 'Doing Meta-Analysis in R', by Mathias Harrer, Pim Cuijpers, & David Ebert, adapted to focus on exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/"
 favicon: "favicon.ico"
 ---
 
@@ -30,13 +29,10 @@ favicon: "favicon.ico"
 ![](coverbild.jpg)
 
 ```{block,type='rmdinfo'}
-This guide shows you how to conduct Meta-Analyses in R from scratch. The focus of this guide is primarily on clinical outcome research in psychology. It is designed for staff and collaborators of the [**PROTECT Lab**](https://www.protectlab.org), which is headed by **Dr. David D. Ebert**.
+This is a fork of the book 'Doing Meta-Analysis in R', by Mathias Harrer, Pim Cuijpers, & David Ebert, adapted to focus on exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/
 ```
 
 <br></br>
-<img width="40%" src="protectlogo.PNG"/>
-<img width="15%" src="hexagon.png"/>
-
 
 ---
 

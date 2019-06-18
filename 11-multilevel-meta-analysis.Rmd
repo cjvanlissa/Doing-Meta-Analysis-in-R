@@ -4,7 +4,7 @@
 
 $$ $$
 
-This chapter deals with the topic of pooling effect sizes in **"multilevel" meta-analyses**. You probably wonder why we put the word "multilevel" into **quotation marks**. There is an increasing number of studies describing themselves as "multilevel" meta-analyses, which insinuates that a "multilevel" meta-analysis would be something special or extraordinary compared to "standard" meta-analyses. This, however, is not true, as every meta-analytic model presupposes a multilevel structure within the data to pool results [@pastor2018multilevel]. This means that basically, once you've reached this chapter in the guide, you will have already fitted a multilevel meta-analytic model to data several times (maybe even without knowing). When people talk about multilevel meta-analysis, what they often think of are **three-level meta-analytic models**, which are indeed somewhat different to the [fixed-effect](#fixed) and [random-effects models](#random) we presented before.
+By the time you reach this chapter, you have already fitted a multilevel meta-analytic model several times. This is because the meta-analytic random-effects model is, by definition, a two-level multilevel model. When people talk about "multilevel meta-analysis", however, they more commonly  what they often think of are **three-level meta-analytic models**. We introduce these here, because they are an excellent and convenient solution to the problem of **dependent data**: The situation that arises when you extract several effect sizes from ONE sample; fo
 
 ```{block, type='rmdinfo'}
 **The multilevel nature of Meta-Analysis**
