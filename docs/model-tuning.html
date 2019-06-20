@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>12.3 Model tuning | Doing Meta-Analysis in R and exploring heterogeneity using metaforest</title>
-  <meta name="description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/">
-  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>13.3 Model tuning | Doing Meta-Analysis in R and exploring heterogeneity using metaforest</title>
+  <meta name="description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="12.3 Model tuning | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  <meta property="og:title" content="13.3 Model tuning | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
   <meta property="og:type" content="book" />
   
   
@@ -17,20 +16,20 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="12.3 Model tuning | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  <meta name="twitter:title" content="13.3 Model tuning | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
   
   <meta name="twitter:description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
   
 
-<meta name="author" content="Caspar van Lissa¹">
+<meta name="author" content="Caspar van Lissa¹" />
 
 
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <link rel="prev" href="using-metaforest.html">
 <link rel="next" href="what-to-report.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -194,9 +193,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10" data-path="publication-bias.html"><a href="publication-bias.html"><i class="fa fa-check"></i><b>10</b> Publication Bias</a><ul>
 <li class="chapter" data-level="10.1" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html"><i class="fa fa-check"></i><b>10.1</b> Detecting publication bias</a><ul>
 <li class="chapter" data-level="10.1.1" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#funnel-plots"><i class="fa fa-check"></i><b>10.1.1</b> Funnel plots</a></li>
-<li class="chapter" data-level="10.1.2" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#contour-enhanced-funnel-plots"><i class="fa fa-check"></i><b>10.1.2</b> Contour-enhanced funnel plots</a></li>
-<li class="chapter" data-level="10.1.3" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#testing-for-funnel-plot-asymmetry-using-eggers-test"><i class="fa fa-check"></i><b>10.1.3</b> Testing for funnel plot asymmetry using Egger’s test</a></li>
-<li class="chapter" data-level="10.1.4" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#dant"><i class="fa fa-check"></i><b>10.1.4</b> Duval &amp; Tweedie’s trim-and-fill procedure</a></li>
+<li class="chapter" data-level="10.1.2" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#eggers-test"><i class="fa fa-check"></i><b>10.1.2</b> Egger’s test</a></li>
+<li class="chapter" data-level="10.1.3" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#contour-enhanced-funnel-plots"><i class="fa fa-check"></i><b>10.1.3</b> Contour-enhanced funnel plots</a></li>
+<li class="chapter" data-level="10.1.4" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#testing-for-funnel-plot-asymmetry-using-eggers-test"><i class="fa fa-check"></i><b>10.1.4</b> Testing for funnel plot asymmetry using Egger’s test</a></li>
+<li class="chapter" data-level="10.1.5" data-path="smallstudyeffects.html"><a href="smallstudyeffects.html#dant"><i class="fa fa-check"></i><b>10.1.5</b> Duval &amp; Tweedie’s trim-and-fill procedure</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="multilevel-meta-analysis.html"><a href="multilevel-meta-analysis.html"><i class="fa fa-check"></i><b>11</b> “Multilevel” Meta-Analysis</a><ul>
@@ -210,19 +210,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.2.4" data-path="fitting-a-three-level-model.html"><a href="fitting-a-three-level-model.html#comparing-the-fit"><i class="fa fa-check"></i><b>11.2.4</b> Comparing the fit</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="metaforest.html"><a href="metaforest.html"><i class="fa fa-check"></i><b>12</b> Exploring heterogeneity</a><ul>
-<li class="chapter" data-level="12.1" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html"><i class="fa fa-check"></i><b>12.1</b> Understanding random forests</a><ul>
-<li class="chapter" data-level="12.1.1" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html#meta-analytic-random-forests"><i class="fa fa-check"></i><b>12.1.1</b> Meta-analytic random forests</a></li>
-<li class="chapter" data-level="12.1.2" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html#tuning-parameters"><i class="fa fa-check"></i><b>12.1.2</b> Tuning parameters</a></li>
+<li class="chapter" data-level="12" data-path="robust-variance-estimation.html"><a href="robust-variance-estimation.html"><i class="fa fa-check"></i><b>12</b> Robust variance estimation</a><ul>
+<li class="chapter" data-level="12.1" data-path="robust-variance-estimation-1.html"><a href="robust-variance-estimation-1.html"><i class="fa fa-check"></i><b>12.1</b> Robust variance estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="12.2" data-path="using-metaforest.html"><a href="using-metaforest.html"><i class="fa fa-check"></i><b>12.2</b> Using MetaForest</a><ul>
-<li class="chapter" data-level="12.2.1" data-path="using-metaforest.html"><a href="using-metaforest.html#checking-convergence"><i class="fa fa-check"></i><b>12.2.1</b> Checking convergence</a></li>
+<li class="chapter" data-level="13" data-path="metaforest.html"><a href="metaforest.html"><i class="fa fa-check"></i><b>13</b> Exploring heterogeneity</a><ul>
+<li class="chapter" data-level="13.1" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html"><i class="fa fa-check"></i><b>13.1</b> Understanding random forests</a><ul>
+<li class="chapter" data-level="13.1.1" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html#meta-analytic-random-forests"><i class="fa fa-check"></i><b>13.1.1</b> Meta-analytic random forests</a></li>
+<li class="chapter" data-level="13.1.2" data-path="understanding-random-forests.html"><a href="understanding-random-forests.html#tuning-parameters"><i class="fa fa-check"></i><b>13.1.2</b> Tuning parameters</a></li>
 </ul></li>
-<li class="chapter" data-level="12.3" data-path="model-tuning.html"><a href="model-tuning.html"><i class="fa fa-check"></i><b>12.3</b> Model tuning</a><ul>
-<li class="chapter" data-level="12.3.1" data-path="model-tuning.html"><a href="model-tuning.html#variable-importance"><i class="fa fa-check"></i><b>12.3.1</b> Variable importance</a></li>
-<li class="chapter" data-level="12.3.2" data-path="model-tuning.html"><a href="model-tuning.html#partial-dependence"><i class="fa fa-check"></i><b>12.3.2</b> Partial dependence</a></li>
+<li class="chapter" data-level="13.2" data-path="using-metaforest.html"><a href="using-metaforest.html"><i class="fa fa-check"></i><b>13.2</b> Using MetaForest</a><ul>
+<li class="chapter" data-level="13.2.1" data-path="using-metaforest.html"><a href="using-metaforest.html#checking-convergence"><i class="fa fa-check"></i><b>13.2.1</b> Checking convergence</a></li>
 </ul></li>
-<li class="chapter" data-level="12.4" data-path="what-to-report.html"><a href="what-to-report.html"><i class="fa fa-check"></i><b>12.4</b> What to report</a></li>
+<li class="chapter" data-level="13.3" data-path="model-tuning.html"><a href="model-tuning.html"><i class="fa fa-check"></i><b>13.3</b> Model tuning</a><ul>
+<li class="chapter" data-level="13.3.1" data-path="model-tuning.html"><a href="model-tuning.html#variable-importance"><i class="fa fa-check"></i><b>13.3.1</b> Variable importance</a></li>
+<li class="chapter" data-level="13.3.2" data-path="model-tuning.html"><a href="model-tuning.html#partial-dependence"><i class="fa fa-check"></i><b>13.3.2</b> Partial dependence</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="what-to-report.html"><a href="what-to-report.html"><i class="fa fa-check"></i><b>13.4</b> What to report</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -243,7 +246,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="model-tuning" class="section level2">
-<h2><span class="header-section-number">12.3</span> Model tuning</h2>
+<h2><span class="header-section-number">13.3</span> Model tuning</h2>
 <p>Next, we tune the model using the R-package <code>caret</code>, which offers a uniform workflow for any machine learning task. The function <code>ModelInfo_mf</code> tells caret how to tune a MetaForest analysis. As tuning parameters, we consider all three types of weights (uniform, fixed-, and random-effects), number of candidate variables at each split from 2-6, and a minimum node size from 2-6. We select the model with smallest prediction error (RMSE) as final model, based on 10-fold clustered cross-validation. Clustered cross-validation means that effect sizes from the same study are always included in the same fold, to account for the dependency in the data. Note that the number of folds cannot exceed the number of clusters in the data. Moreover, if the number of clusters is very small, one might have to resort to specifying the same number of folds as clusters. Model tuning typically takes a long time; for this small dataset, it might take five minutes; for a very large dataset, it might take hours. However, when your dataset is larger, you will often reach model convergence at a lower number of trees, which reduces computation time.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Install the </span>
 <span class="kw">install.packages</span>(<span class="st">&quot;caret&quot;</span>)
@@ -288,7 +291,7 @@ r2_oob &lt;-<span class="st"> </span>final<span class="op">$</span>forest<span c
 <p>We can see that the <span class="math inline">\(R^2_{cv} = .50\)</span>, and the <span class="math inline">\(R^2_{oob} = -.16\)</span>. The negative value means that the model performs worse than just using the mean. The fact that these values differ so much suggests that perhaps our model is not detecting reliable patterns in the data. This would also correspond with the fact that none of the variables were consistently selected during the recursive preselection step. In the published paper for this meta-analysis, we bootstrapped the entire analysis 100 times, and showed that the average bootstrapped <span class="math inline">\(R^2\)</span> was around 0. So we concluded that none of the moderators were relevant.</p>
 <p>For the sake of this exercise, we still continue exploring, however!</p>
 <div id="variable-importance" class="section level3">
-<h3><span class="header-section-number">12.3.1</span> Variable importance</h3>
+<h3><span class="header-section-number">13.3.1</span> Variable importance</h3>
 <p>variable importance metrics, which quantify the relative importance of each moderator in predicting the effect size. These metrics are analogous in function to the (absolute) standardized regression coefficients (beta; <span class="math inline">\(\mid\beta\mid\)</span>) in regression: They reflect the strength of each moderator’s relationship with the outcome on a common metric. However, whereas betas in regression only reflect linear, univariate, partial relationships, MetaForest’s variable importance metrics reflect each moderator’s contribution to the predictive power of the final model across all linear-, non-linear-, and interaction effects. So-called <em>permutation importance</em> is obtained by randomly permuting, or shuffling, the values of a moderator, thereby anulling any relationship that moderator had with the outcome, and then observing how much the predictive performance of the final model drops. If predictive performance drops a lot, the moderator must have been important.</p>
 <p>Plot the variable importance:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Plot variable importance</span>
@@ -296,7 +299,7 @@ r2_oob &lt;-<span class="st"> </span>final<span class="op">$</span>forest<span c
 <p><img src="plot_varimp.png" /></p>
 </div>
 <div id="partial-dependence" class="section level3">
-<h3><span class="header-section-number">12.3.2</span> Partial dependence</h3>
+<h3><span class="header-section-number">13.3.2</span> Partial dependence</h3>
 <p>Partial dependence plots visualize the shape of the marginal relationship of each moderator to the effect size, averaging over all values of the other predictors. Researchers most commonly inspect only univariate marginal dependence plots. Exploring all possible higher order interactions swiftly becomes unmanageable; with just 10 moderators, the number of bivariate interactions is 45, and the number of trivariate interactions is 120. In order to plot bivariate interactions with a specific moderator of theoretical relevance, you can use the <code>PartialDependence</code> function in conjunction with the <code>moderator</code> argument.</p>
 <p>Because this is an exploratory, non-parametric analysis, we cannot conclude whether any of these findings are “significant”. However, the <code>PartialDependence</code> function has two settings that help visualize the “importance” of a finding: <code>rawdata</code>, which plots the weighted raw data (studies with larger weights are plotted with a larger point size), thereby visualizing the variance around the mean prediction, and <code>pi</code>, which plots a (e.g., 95%) percentile interval of the predictions of individual trees in the model. This is not the same as a confidence interval, but it does show how variable or stable the model predictions are.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">PartialDependence</span>(final, <span class="dt">rawdata =</span> <span class="ot">TRUE</span>, <span class="dt">pi =</span> <span class="fl">.95</span>)</code></pre>

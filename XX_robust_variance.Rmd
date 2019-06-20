@@ -1,0 +1,48 @@
+# Robust variance estimation
+
+![](sandwich.jpg)
+
+A second solution to the problem of dependent data with unknown sampling covariances is **robust variance estimation**. This chapter illustrates how to get robust variance estimates for standard errors of `metafor` models.
+
+
+## Robust variance estimation
+
+The package `clubSandwich` can perform robust variance estimation for a variety of models - including the `rma` models created by `metafor`. This is convenient, because it means that we can simply specify our model in the same way as before. Then, we take the output of our `rma` analysis, and use it as input for the robust variance estimation function `clubSandwich::coef_test`. 
+
+Robust variance estimation is another way to account for dependent data (multiple outcomes from one study/sample). Thus, we need to indicate a 'clustering' variable again. When we pass our `rma` output to `coef_test`, the function automatically uses the outermost level of our multilevel model.
+
+```{r eval = TRUE, echo = FALSE, results = "hide", message=FALSE}
+library(metaforest)
+df <- curry
+```
+
+We first re-fit the three-level multilevel meta-analysis from before, which uses REML to estimate the variance components:
+
+```{r, message = FALSE}
+m_multi <- rma.mv(yi = d, V = vi, random = list(~1 | effect_id, ~1 | study_id), data = df)
+m_multi
+```
+
+The standard errors, t-tests, and confidence intervals from `rma` are all parameteric and model-based. The `clubSandwich::coef_test` function will calculate robust standard errors and robust t-tests for each of the coefficients:
+
+```{r, eval = FALSE}
+# Install if necessary
+install.packages("clubSandwich")
+library(clubSandwich)
+
+clubSandwich::coef_test(m_multi, vcov = "CR2")
+```
+
+```{r, message=FALSE, echo = FALSE, eval = TRUE}
+library(clubSandwich)
+
+print(clubSandwich::coef_test(m_multi, vcov = "CR2"))
+```
+
+Note that `coef_test` assumed that it should cluster based on `studyID`, which is the outer-most random effect in the metafor model. This can be specified explicitly by including the option `cluster = df$effect_id` in the call. 
+
+The `vcov = "CR2"` option means that the standard errors will be corrected using the bias-reduced linearization estimator described in Tipton and Pustejovsky (2015).
+
+<br><br>
+
+---

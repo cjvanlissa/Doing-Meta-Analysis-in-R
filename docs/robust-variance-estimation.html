@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.3 Additional resources (optional) | Doing Meta-Analysis in R and exploring heterogeneity using metaforest</title>
+  <title>Chapter 12 Robust variance estimation | Doing Meta-Analysis in R and exploring heterogeneity using metaforest</title>
   <meta name="description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
   <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.3 Additional resources (optional) | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  <meta property="og:title" content="Chapter 12 Robust variance estimation | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.3 Additional resources (optional) | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  <meta name="twitter:title" content="Chapter 12 Robust variance estimation | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
   
   <meta name="twitter:description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<link rel="prev" href="starting-a-new-project-in-rstudio.html">
-<link rel="next" href="getting-your-data-into-r.html">
+<link rel="prev" href="fitting-a-three-level-model.html">
+<link rel="next" href="robust-variance-estimation-1.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -245,42 +245,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="additional-resources-optional" class="section level2">
-<h2><span class="header-section-number">2.3</span> Additional resources (optional)</h2>
-<p>In order to get the most out of this guide, it’s helpful (but not essential) if you have some programming experience already. If you’ve never programmed before, you might find <strong><em>Hands-On Programming with R</em></strong> <span class="citation">(Grolemund <a href="#ref-grolemund2014hands">2014</a>)</span> to be a useful primer.</p>
-<p>There are three things you need to run the code: <strong>R</strong>, <strong>RStudio</strong>, and collection of <strong>R packages</strong>. Packages are the fundamental units of reproducible R code. They include reusable functions, the documentation that describes how to use them, and sample data.</p>
-<p>Gladly, once you’ve reached this point successfully, these three things are set already. Nevertheless, we will have to install and load a few new packages at some place in this guide, for which you can use the <code>install.packages()</code> the same way as you did before.</p>
-<p>Throughout the guide, a consistent set of conventions is used to refer to code:</p>
-<ul>
-<li>Functions are in a code font and followed by parentheses, like
-<code>sum()</code> or <code>mean()</code>.</li>
-<li>Other R objects (like data or function arguments) are in a code
-font, without parentheses, like <code>seTE</code> or <code>method.tau</code>.</li>
-<li>Sometimes, we’ll use the package name followed by two colons, like
-<code>meta::metagen()</code>. This is also valid R code. This is used so as to not confuse the functions of different packages with the same name.</li>
-</ul>
-<div id="getting-help" class="section level3">
-<h3><span class="header-section-number">2.3.1</span> Getting Help</h3>
-<p>As you start to apply the techniques described in this guide to your data you will soon find questions that the guide does not answer. This section describes a few tips on how to get help.</p>
-<ul>
-<li>If you get stuck, start with <strong>Google</strong>. Typically, adding “R” to a search is enough to restrict it to relevant results: if the search isn’t useful, it often means that there aren’t any R-specific results available. Google is particularly useful for error messages. If you get an error message and you have no idea what it means, try googling it. Chances are that someone else has been confused by it in the past, and there will
-be help somewhere on the web. (If the error message isn’t in English,
-run <code>Sys.setenv(LANGUAGE = &quot;en&quot;)</code> and re-run the code; you’re
-more likely to find help for English error messages.)</li>
-<li>If Google doesn’t help, try <a href="https://stackoverflow.com">stackoverflow</a>. Start by spending a little time searching for an existing answer; including [R] restricts your search to questions and answers that use R.</li>
-<li>Lastly, if you stumble upon an error (or typos!) in this guide’s text or R syntax, feel free to contact <strong>Caspar van Lissa</strong> at <strong><a href="mailto:c.j.vanlissa@uu.nl">c.j.vanlissa@uu.nl</a></strong>.</li>
-</ul>
-<p><br><br></p>
-<hr />
-
-</div>
-</div>
-<!-- </div> -->
-<h3>References</h3>
-<div id="refs" class="references">
-<div id="ref-grolemund2014hands">
-<p>Grolemund, Garrett. 2014. <em>Hands-on Programming with R: Write Your Own Functions and Simulations</em>. O’Reilly.</p>
-</div>
+<div id="robust-variance-estimation" class="section level1">
+<h1><span class="header-section-number">Chapter 12</span> Robust variance estimation</h1>
+<p><img src="sandwich.jpg" /></p>
+<p>A second solution to the problem of dependent data with unknown sampling covariances is <strong>robust variance estimation</strong>. This chapter illustrates how to get robust variance estimates for standard errors of <code>metafor</code> models.</p> 
 </div>
 <!DOCTYPE html>
   <html>
@@ -298,8 +266,8 @@ more likely to find help for English error messages.)</li>
           </div>
         </div>
       </div>
-<a href="starting-a-new-project-in-rstudio.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="getting-your-data-into-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="fitting-a-three-level-model.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="robust-variance-estimation-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

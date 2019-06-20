@@ -1,5 +1,5 @@
 book_filename: "Doing_Meta_Analysis_in_R"
-rmd_files: ["index.Rmd", "01-rstudio_and_basics.Rmd", "02-getting_data_in_R.Rmd", "XX-calculating_effect_sizes.Rmd", "03-pooling_effect_sizes.Rmd", "04-forest_plots.Rmd", "05-heterogeneity.Rmd", "06-Subgroup_Analyses.Rmd", "07-metaregression.Rmd", "08-publication_bias.Rmd", "11-multilevel-meta-analysis.Rmd", "XX-metaforest.rmd", "14-references.Rmd"]
+rmd_files: ["index.Rmd", "01-rstudio_and_basics.Rmd", "02-getting_data_in_R.Rmd", "XX-calculating_effect_sizes.Rmd", "03-pooling_effect_sizes.Rmd", "04-forest_plots.Rmd", "05-heterogeneity.Rmd", "06-Subgroup_Analyses.Rmd", "07-metaregression.Rmd", "08-publication_bias.Rmd", "11-multilevel-meta-analysis.Rmd", "XX_robust_variance.Rmd" , "XX-metaforest.rmd", "14-references.Rmd"]
 language:
   ui:
     chapter_name: "Chapter "

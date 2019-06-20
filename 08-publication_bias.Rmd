@@ -44,6 +44,16 @@ We see from the plot that in the case of our meta-anlysis, there is no obvious p
 
 We can also display the name of each study using the `studlab` parameter.
 
+### Egger's test
+
+Remember that we can formally test for funnel asymmetry, by predicting the effect size from its standard error. For this, we can simply apply the `regtest` function to our existing random-effects meta-analysis, and the SE will be used as a predictor:
+
+```{r}
+regtest(m_re)
+```
+
+The result is non-significant, so there is no evidence for asymmetry.
+
 ### Contour-enhanced funnel plots
 
 An even better way to inspect the funnel plot is through **contour-enhanced funnel plots**, which help to distinguish publication bias from other forms of asymmetry [@peters2008contour]. Contour-enhanced funnels include colors signifying the significance level into which the effects size of each study falls (p < .05, p < .01, and p < .001). We can plot such funnels using this code:
@@ -85,9 +95,9 @@ The **trim-and-fill-procedure** can be performed using the `trimfill` function i
 df_bias <- df
 
 # Identify the 20 effect sizes with the smallest effect sizes
-small_effects <- order(df$d)[1:20]
+small_effects <- order(df_bias$d)[1:20]
 # Of these small effect sizes, find the ones with the biggest sampling variance
-big_variance <- order(df$vi[small_effects], decreasing = TRUE)
+big_variance <- order(df_bias$vi[small_effects], decreasing = TRUE)
 # Delete these studies:
 delete_these <- small_effects[big_variance[1:10]]
 df_bias <- df_bias[-delete_these, ]
@@ -128,3 +138,5 @@ funnel(m_taf)
 <br><br>
 
 ---
+
+

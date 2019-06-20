@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.3 Additional resources (optional) | Doing Meta-Analysis in R and exploring heterogeneity using metaforest</title>
+  <title>12.1 Robust variance estimation | Doing Meta-Analysis in R and exploring heterogeneity using metaforest</title>
   <meta name="description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
   <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.3 Additional resources (optional) | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  <meta property="og:title" content="12.1 Robust variance estimation | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.3 Additional resources (optional) | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
+  <meta name="twitter:title" content="12.1 Robust variance estimation | Doing Meta-Analysis in R and exploring heterogeneity using metaforest" />
   
   <meta name="twitter:description" content="This guide is based on the book ‘Doing Meta-Analysis in R’, by Mathias Harrer, Pim Cuijpers, &amp; David Ebert, and was adapted to focus on the metafor package, and exploring heterogeneity using metaforest. The original can be found here: https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<link rel="prev" href="starting-a-new-project-in-rstudio.html">
-<link rel="next" href="getting-your-data-into-r.html">
+<link rel="prev" href="robust-variance-estimation.html">
+<link rel="next" href="metaforest.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -245,43 +245,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="additional-resources-optional" class="section level2">
-<h2><span class="header-section-number">2.3</span> Additional resources (optional)</h2>
-<p>In order to get the most out of this guide, it’s helpful (but not essential) if you have some programming experience already. If you’ve never programmed before, you might find <strong><em>Hands-On Programming with R</em></strong> <span class="citation">(Grolemund <a href="#ref-grolemund2014hands">2014</a>)</span> to be a useful primer.</p>
-<p>There are three things you need to run the code: <strong>R</strong>, <strong>RStudio</strong>, and collection of <strong>R packages</strong>. Packages are the fundamental units of reproducible R code. They include reusable functions, the documentation that describes how to use them, and sample data.</p>
-<p>Gladly, once you’ve reached this point successfully, these three things are set already. Nevertheless, we will have to install and load a few new packages at some place in this guide, for which you can use the <code>install.packages()</code> the same way as you did before.</p>
-<p>Throughout the guide, a consistent set of conventions is used to refer to code:</p>
-<ul>
-<li>Functions are in a code font and followed by parentheses, like
-<code>sum()</code> or <code>mean()</code>.</li>
-<li>Other R objects (like data or function arguments) are in a code
-font, without parentheses, like <code>seTE</code> or <code>method.tau</code>.</li>
-<li>Sometimes, we’ll use the package name followed by two colons, like
-<code>meta::metagen()</code>. This is also valid R code. This is used so as to not confuse the functions of different packages with the same name.</li>
-</ul>
-<div id="getting-help" class="section level3">
-<h3><span class="header-section-number">2.3.1</span> Getting Help</h3>
-<p>As you start to apply the techniques described in this guide to your data you will soon find questions that the guide does not answer. This section describes a few tips on how to get help.</p>
-<ul>
-<li>If you get stuck, start with <strong>Google</strong>. Typically, adding “R” to a search is enough to restrict it to relevant results: if the search isn’t useful, it often means that there aren’t any R-specific results available. Google is particularly useful for error messages. If you get an error message and you have no idea what it means, try googling it. Chances are that someone else has been confused by it in the past, and there will
-be help somewhere on the web. (If the error message isn’t in English,
-run <code>Sys.setenv(LANGUAGE = &quot;en&quot;)</code> and re-run the code; you’re
-more likely to find help for English error messages.)</li>
-<li>If Google doesn’t help, try <a href="https://stackoverflow.com">stackoverflow</a>. Start by spending a little time searching for an existing answer; including [R] restricts your search to questions and answers that use R.</li>
-<li>Lastly, if you stumble upon an error (or typos!) in this guide’s text or R syntax, feel free to contact <strong>Caspar van Lissa</strong> at <strong><a href="mailto:c.j.vanlissa@uu.nl">c.j.vanlissa@uu.nl</a></strong>.</li>
-</ul>
+<div id="robust-variance-estimation-1" class="section level2">
+<h2><span class="header-section-number">12.1</span> Robust variance estimation</h2>
+<p>The package <code>clubSandwich</code> can perform robust variance estimation for a variety of models - including the <code>rma</code> models created by <code>metafor</code>. This is convenient, because it means that we can simply specify our model in the same way as before. Then, we take the output of our <code>rma</code> analysis, and use it as input for the robust variance estimation function <code>clubSandwich::coef_test</code>.</p>
+<p>Robust variance estimation is another way to account for dependent data (multiple outcomes from one study/sample). Thus, we need to indicate a ‘clustering’ variable again. When we pass our <code>rma</code> output to <code>coef_test</code>, the function automatically uses the outermost level of our multilevel model.</p>
+<p>We first re-fit the three-level multilevel meta-analysis from before, which uses REML to estimate the variance components:</p>
+<pre class="sourceCode r"><code class="sourceCode r">m_multi &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(<span class="dt">yi =</span> d, <span class="dt">V =</span> vi, <span class="dt">random =</span> <span class="kw">list</span>(<span class="op">~</span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>effect_id, <span class="op">~</span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>study_id), <span class="dt">data =</span> df)
+m_multi</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 56; method: REML)
+## 
+## Variance Components:
+## 
+##             estim    sqrt  nlvls  fixed     factor 
+## sigma^2.1  0.0000  0.0000     56     no  effect_id 
+## sigma^2.2  0.0838  0.2895     27     no   study_id 
+## 
+## Test for Heterogeneity:
+## Q(df = 55) = 156.9109, p-val &lt; .0001
+## 
+## Model Results:
+## 
+## estimate      se    zval    pval   ci.lb   ci.ub 
+##   0.2836  0.0650  4.3638  &lt;.0001  0.1562  0.4109  *** 
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The standard errors, t-tests, and confidence intervals from <code>rma</code> are all parameteric and model-based. The <code>clubSandwich::coef_test</code> function will calculate robust standard errors and robust t-tests for each of the coefficients:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Install if necessary</span>
+<span class="kw">install.packages</span>(<span class="st">&quot;clubSandwich&quot;</span>)
+<span class="kw">library</span>(clubSandwich)
+
+clubSandwich<span class="op">::</span><span class="kw">coef_test</span>(m_multi, <span class="dt">vcov =</span> <span class="st">&quot;CR2&quot;</span>)</code></pre>
+<pre><code>##     Coef. Estimate    SE t-stat d.f. p-val (Satt) Sig.
+## 1 intrcpt    0.284 0.065   4.37 24.6       &lt;0.001  ***</code></pre>
+<p>Note that <code>coef_test</code> assumed that it should cluster based on <code>studyID</code>, which is the outer-most random effect in the metafor model. This can be specified explicitly by including the option <code>cluster = df$effect_id</code> in the call.</p>
+<p>The <code>vcov = &quot;CR2&quot;</code> option means that the standard errors will be corrected using the bias-reduced linearization estimator described in Tipton and Pustejovsky (2015).</p>
 <p><br><br></p>
 <hr />
 
 </div>
-</div>
 <!-- </div> -->
-<h3>References</h3>
-<div id="refs" class="references">
-<div id="ref-grolemund2014hands">
-<p>Grolemund, Garrett. 2014. <em>Hands-on Programming with R: Write Your Own Functions and Simulations</em>. O’Reilly.</p>
-</div>
-</div>
 <!DOCTYPE html>
   <html>
   <head>
@@ -298,8 +302,8 @@ more likely to find help for English error messages.)</li>
           </div>
         </div>
       </div>
-<a href="starting-a-new-project-in-rstudio.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="getting-your-data-into-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="robust-variance-estimation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="metaforest.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
